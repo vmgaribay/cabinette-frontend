@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cabinette Online
 
-## Getting Started
+Inspired by the Power BI dasboard created for Cabinette, this is a similar interactive dashboard for exploring and ranking candidate cabin sites near U.S. National Parks and Monuments. This version is an online application for improved accessibility which will be built with Next.js, React, and TypeScript.
 
-First, run the development server:
+## Planned Functionalities
+
+- Interactive map (Leaflet)
+- Dynamic site scoring and ranking
+- Adjustable scoring weights
+- (Filtered) table with rankings 
+- Detailed view upon selection of parks/sites
+
+
+## Local Testing
+### Prerequisites
+
+- Node.js (v18+)
+- npm or similar (yarn, pnpm, bun)
+
+### Installation
+
+```bash
+git clone https://github.com/vmgaribay/cabinette-frontend.git
+cd cabinette-frontend
+npm install
+```
+
+### Run
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Data
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The Postgres database was built as described in [Cabinette](https://github.com/vmgaribay/cabinette.git)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deployment
 
-## Learn More
+Deployment on [Vercel](https://vercel.com/) is planned to accommodate dynamic features.
 
-To learn more about Next.js, take a look at the following resources:
+## Acknowledgements
+I acknowledge that I consulted resources such as GitHub Copilot (GPT-5, GPT-4.1), Plotly and Leaflet video tutorials, and various online forums in the construction of this project.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contact
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Victoria Garibay, Ph.D. — [Contact Form](https://vmgaribay.github.io/portfolio/contact_form.html) | [GitHub Profile](https://github.com/vmgaribay)
