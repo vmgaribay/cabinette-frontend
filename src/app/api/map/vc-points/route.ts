@@ -6,19 +6,29 @@ const pool = new Pool({
 });
 
 // Get visitor center points, format as FeatureCollection for Leaflet
+
 export async function GET(req: NextRequest) {
   try {
-    const { rows } = await pool.query(`
-      SELECT id, ST_AsGeoJSON(ST_GeomFromText(geom)) as geometry
+    const unitcodesParam = req.nextUrl.searchParams.get("unitcodes");
+    let query = `
+      SELECT id, unitcode, ST_AsGeoJSON(ST_GeomFromText(geom)) as geometry
       FROM mart.site_and_vc_features
       WHERE type = 'vc'
-    `);
+    `;
+    const params: any[] = [];
 
+    if (unitcodesParam) {
+      const unitcodes = unitcodesParam.split(",");
+      query += ` AND unitcode = ANY($1)`;
+      params.push(unitcodes);
+    }
+
+    const { rows } = await pool.query(query, params);
 
     const features = rows.map((row: any) => ({
       type: "Feature",
       geometry: JSON.parse(row.geometry),
-      properties: { id: row.id }
+      properties: { id: row.id, unitcode: row.unitcode }
     }));
 
     return NextResponse.json({
