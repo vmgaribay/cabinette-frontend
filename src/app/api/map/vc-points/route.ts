@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+const globalForPool = global as unknown as { pool: Pool | undefined };
+const pool = globalForPool.pool ?? new Pool({ connectionString: process.env.DATABASE_URL });
+if (!globalForPool.pool) globalForPool.pool = pool;
 
 // Get visitor center points, format as FeatureCollection for Leaflet
 

@@ -5,13 +5,13 @@ const DynamicMap = dynamic(() => import("./defaultmap"), { ssr: false });
 
 type Park = { unitcode: string; parkname: string };
 
-export default function FilteredMap() {
+export default function FilteredMap({ sitesVisible, selectedFeature, setSelectedFeature }: { sitesVisible?: (ids: string[]) => void; selectedFeature: string | number | null; setSelectedFeature: (feature: string | number | null) => void }) {
   const [parks, setParks] = useState<Park[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [mapUnitcodes, setMapUnitcodes] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch("/api/vc_info/unitcodes_names").then(r => r.json()).then(setParks);
+    fetch("/api/map/unitcodes_names").then(r => r.json()).then(setParks);
   }, []);
 
    useEffect(() => {
@@ -26,13 +26,10 @@ const handleChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
 
     const unitcodesKey = mapUnitcodes.join(",");
 
-  console.log("selected parks:", selected);
-  console.log("mapUnitcodes:", mapUnitcodes);
-
     return (
     <div style={{ display: "flex", gap: 12 }}>
       <div style={{ width: 260 }}>
-        <label style={{ display: "block", marginBottom: 8 }}>Filter sites by park name</label>
+        <label style={{ display: "block", marginBottom: 8 }}>Filter Site Visibility by Park/Monument:</label>
         <select
           multiple
           value={selected}
@@ -67,8 +64,13 @@ const handleChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
       </div>
 
       <div style={{ flex: 1, height: 600 }}>
-        <DynamicMap key={unitcodesKey} unitcodes={mapUnitcodes} />
-
+        <DynamicMap  
+          key={unitcodesKey}
+          unitcodes={mapUnitcodes}
+          sitesVisible={sitesVisible}
+          selectedFeature={selectedFeature}
+          setSelectedFeature={setSelectedFeature}
+        />
       </div>
     </div>
   );

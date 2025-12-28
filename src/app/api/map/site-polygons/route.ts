@@ -1,9 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+
+type SiteRow = {
+  id: string;
+  geometry: string;
+  parks_within_30_mi_unitcodes: string;
+};
+
+type Feature = {
+  type: "Feature";
+  geometry: any;
+  properties: { id: string };
+};
+
+const globalForPool = global as unknown as { pool: Pool | undefined };
+const pool = globalForPool.pool ?? new Pool({ connectionString: process.env.DATABASE_URL });
+if (!globalForPool.pool) globalForPool.pool = pool;
 
 // Get site polygons and info, format as FeatureCollection for Leaflet
 export async function GET(req: NextRequest) {
@@ -29,8 +42,8 @@ if (unitcodesParam) {
   params.push(unitcodes);
 }
 
-    const { rows } = await pool.query(query, params);
-    const features = rows.map((row: any) => ({
+    const { rows } = await pool.query<SiteRow>(query, params);
+    const features: Feature[] = rows.map(row => ({
       type: "Feature",
       geometry: JSON.parse(row.geometry),
       properties: { id: row.id }
