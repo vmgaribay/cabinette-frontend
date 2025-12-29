@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState, useCallback, useMemo } from "react";
-import TopSites from "./components/topsites";
-import FilteredMap from "./components/filteredmap";
-import TextDetails from "./components/textdetails";
-import VCVisitationPlot from "./components/vcplot";
-import SiteGauges from "./components/sitegauges";
+import TopSites from "./components/TopSites";
+import FilteredMap from "./components/FilteredMap";
+import TextDetails from "./components/TextDetails";
+import VCVisitationPlot from "./components/VCPlot";
+import SiteGauges from "./components/SiteGauges";
 import { FeatureSelection } from "./types";
 
 
@@ -90,7 +90,6 @@ export default function Home() {
     demandWeight, competitionWeight, proximityWeight, accessibilityWeight,
     getDemandCol, getCompetitionCol, getProximityCol, getAccessibilityCol
   ]);
-  
 // Compute site scores, filter to match visibility/selection
   const scoredSites = useMemo(() =>
   siteInfo.map(site => ({ ...site, score: computeScore(site) })),
@@ -160,7 +159,7 @@ export default function Home() {
           proximityProxy={proximityProxy}
       />
     </div>
-    <div style={{ width: "80vw", maxWidth: 1200, marginTop: 32 }}>
+    <div style={{ width: "80vw", maxWidth: 1200, height: 350 }}>
       {selectedFeature?.type === "vc" && (
         <VCVisitationPlot  
           visitation={visitation}

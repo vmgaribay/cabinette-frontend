@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import dynamic from "next/dynamic";
-const DynamicMap = dynamic(() => import("./defaultmap"), { ssr: false });
+const DynamicMap = dynamic(() => import("./DefaultMap"), { ssr: false });
 
 type Park = { unitcode: string; parkname: string };
 
@@ -36,11 +36,13 @@ const handleChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
           onChange={handleChange}
           style={{ width: "100%", height: 160 }}
         >
-          {parks.map(p => (
+        {[...parks]
+          .sort((a, b) => a.parkname.localeCompare(b.parkname))
+          .map(p => (
             <option key={p.unitcode} value={p.unitcode}>
               {p.parkname}
             </option>
-          ))}
+        ))}
         </select>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8 }}>
           <span style={{ fontSize: 12, color: "#666" }}>
