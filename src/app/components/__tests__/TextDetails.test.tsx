@@ -31,9 +31,7 @@ const mockVCInfo = [
   },
 ];
 
-const mockVisitation = [
-  { unitcode: "JOTR", parkname: "Joshua Tree NP" },
-];
+const mockVisitation = [{ unitcode: "JOTR", parkname: "Joshua Tree NP" }];
 
 describe("TextDetails", () => {
   it("selection prompt renders", () => {
@@ -43,9 +41,11 @@ describe("TextDetails", () => {
         siteInfo={mockSiteInfo}
         vcInfo={mockVCInfo}
         visitation={mockVisitation}
-      />
+      />,
     );
-    expect(screen.getByText(/select a visitor center or candidate site/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/select a visitor center or candidate site/i),
+    ).toBeInTheDocument();
   });
 
   it("VC details render", () => {
@@ -55,9 +55,11 @@ describe("TextDetails", () => {
         siteInfo={mockSiteInfo}
         vcInfo={mockVCInfo}
         visitation={mockVisitation}
-      />
+      />,
     );
-    expect(screen.getByText(/Visitor Center JOTR_1 Details/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Visitor Center JOTR_1 Details/i),
+    ).toBeInTheDocument();
     expect(screen.getByText(/Visitor Center 1/i)).toBeInTheDocument();
     expect(screen.getByText(/Joshua Tree NP/i)).toBeInTheDocument();
     expect(screen.getByText(/Number of Viable Sites:/i)).toBeInTheDocument();
@@ -76,7 +78,7 @@ describe("TextDetails", () => {
         demandProxy="Proximate Parks"
         demandMetric="Average"
         proximityProxy="Average Distance to Proximate Parks"
-      />
+      />,
     );
     expect(screen.getByText(/Candidate Site 111 Details/i)).toBeInTheDocument();
     expect(screen.getByText(/Score:/i)).toBeInTheDocument();
@@ -84,8 +86,13 @@ describe("TextDetails", () => {
     expect(screen.getByText(/Joshua Tree NP/)).toBeInTheDocument();
     expect(screen.getByText(/Lodging near Site:/i)).toBeInTheDocument();
     expect(screen.getByText(/5/i)).toBeInTheDocument();
-    expect(screen.getByText(/Visitors to All Proximate Parks:/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Visitors to All Proximate Parks:/i),
+    ).toBeInTheDocument();
     expect(screen.getByText(/Monthly Average/i)).toBeInTheDocument();
-    expect(screen.getByText(/Average Distance to Proximate Parks:/i)).toBeInTheDocument();
-    expect(screen.getByText(/3.7 km/i)).toBeInTheDocument();});
+    expect(
+      screen.getByText(/Average Distance to Proximate Parks:/i),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/3.7 km/i)).toBeInTheDocument();
+  });
 });

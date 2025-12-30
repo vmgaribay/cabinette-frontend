@@ -12,7 +12,7 @@ beforeEach(() => {
   global.fetch = jest.fn(() =>
     Promise.resolve({
       json: () => Promise.resolve(parksMock),
-    })
+    }),
   ) as jest.Mock;
 });
 
@@ -28,10 +28,14 @@ test("filter labels render", async () => {
       scoredSites={[]}
       siteInfo={[]}
       visibleSiteIds={[]}
-    />
+    />,
   );
-  expect(screen.getByText(/filter site visibility by park/i)).toBeInTheDocument();
-  await waitFor(() => expect(screen.getByText("Joshua Tree NP")).toBeInTheDocument());
+  expect(
+    screen.getByText(/filter site visibility by park/i),
+  ).toBeInTheDocument();
+  await waitFor(() =>
+    expect(screen.getByText("Joshua Tree NP")).toBeInTheDocument(),
+  );
 });
 
 test("selection value updates", async () => {
@@ -42,14 +46,21 @@ test("selection value updates", async () => {
       scoredSites={[]}
       siteInfo={[]}
       visibleSiteIds={[]}
-    />
+    />,
   );
-  await waitFor(() => expect(screen.getByText("Joshua Tree NP")).toBeInTheDocument());
- const select = screen.getByRole("listbox");
-const option = screen.getByText("Joshua Tree NP") as HTMLOptionElement;
-option.selected = true;
-fireEvent.change(select);
-expect(Array.from((select as HTMLSelectElement).selectedOptions).map(o => o.value)).toContain("JOTR");});
+  await waitFor(() =>
+    expect(screen.getByText("Joshua Tree NP")).toBeInTheDocument(),
+  );
+  const select = screen.getByRole("listbox");
+  const option = screen.getByText("Joshua Tree NP") as HTMLOptionElement;
+  option.selected = true;
+  fireEvent.change(select);
+  expect(
+    Array.from((select as HTMLSelectElement).selectedOptions).map(
+      (o) => o.value,
+    ),
+  ).toContain("JOTR");
+});
 
 test("button clears selection", async () => {
   render(
@@ -59,11 +70,15 @@ test("button clears selection", async () => {
       scoredSites={[]}
       siteInfo={[]}
       visibleSiteIds={[]}
-    />
+    />,
   );
-  await waitFor(() => expect(screen.getByText("Joshua Tree NP")).toBeInTheDocument());
+  await waitFor(() =>
+    expect(screen.getByText("Joshua Tree NP")).toBeInTheDocument(),
+  );
   const select = screen.getByRole("listbox");
   const options = screen.getAllByRole("option");
   options[0].selected = true;
-  fireEvent.change(select);  fireEvent.click(screen.getByText(/clear filters/i));
-  options.forEach(option => expect(option.selected).toBe(false));});
+  fireEvent.change(select);
+  fireEvent.click(screen.getByText(/clear filters/i));
+  options.forEach((option) => expect(option.selected).toBe(false));
+});

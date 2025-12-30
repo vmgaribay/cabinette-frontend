@@ -1,12 +1,9 @@
 @import "./style.css";
 
-
-
-
 .table-header {
   border: 1px solid rgb(var(--light));
   padding: 4px;
-  color: rgb(var(--light));
+  color: rgb(var(--xlight));
   background: rgba(var(--dark), 0.7);
 }
 
@@ -18,8 +15,7 @@
   border: 1px solid rgb(var(--accent));
   border-radius: 6px;
   padding: 4px;
-  font-family: 'Lucida Sans', 'Perpetua', serif;
-
+  font-family: "Lucida Sans", "Perpetua", serif;
 }
 
 .multi-select::-webkit-scrollbar {
@@ -48,7 +44,7 @@
   padding: 0 2rem 1rem 2rem;
   margin: 2rem 0;
   box-shadow: 0 4px 10px rgba(var(--dark), 0.4);
-  font-family: 'Lucida Sans', 'Perpetua', serif;
+  font-family: "Lucida Sans", "Perpetua", serif;
   line-height: 1.5;
 }
 .detail-card h2 {
@@ -69,9 +65,7 @@
   border: 1.5px solid rgba(var(--accent), 0.35);
   border-radius: 18px;
   box-shadow: 0 4px 16px rgba(var(--dark), 0.35);
-  font-family: 'Lucida Sans', 'Perpetua', serif;
-
-
+  font-family: "Lucida Sans", "Perpetua", serif;
 }
 
 .plot-card h2 {
@@ -87,15 +81,14 @@
   accent-color: rgb(var(--accent));
   background: transparent;
   border-radius: 6px;
-  font-family: 'Lucida Sans', 'Perpetua', serif;
-
+  font-family: "Lucida Sans", "Perpetua", serif;
 }
 .drop-down {
   margin-left: 0.5rem;
   background: rgba(var(--xlight), 0.06);
   color: rgb(var(--light));
-  border: 1px solid rgba(var(--accent),0.25);
+  border: 1px solid rgba(var(--accent), 0.25);
   border-radius: 8px;
-  font-family: 'Lucida Sans', 'Perpetua', serif;
+  font-family: "Lucida Sans", "Perpetua", serif;
   padding: 0.25rem 0.5rem;
 }

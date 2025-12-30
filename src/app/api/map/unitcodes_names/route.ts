@@ -7,7 +7,9 @@ type ParkRow = {
 };
 
 const globalForPool = global as unknown as { pool: Pool | undefined };
-const pool = globalForPool.pool ?? new Pool({ connectionString: process.env.DATABASE_URL });
+const pool =
+  globalForPool.pool ??
+  new Pool({ connectionString: process.env.DATABASE_URL });
 if (!globalForPool.pool) globalForPool.pool = pool;
 
 export async function GET() {
@@ -22,6 +24,9 @@ export async function GET() {
     `);
     return NextResponse.json(rows);
   } catch (err) {
-    return NextResponse.json({ error: (err as Error).message }, { status: 500 });
+    return NextResponse.json(
+      { error: (err as Error).message },
+      { status: 500 },
+    );
   }
 }

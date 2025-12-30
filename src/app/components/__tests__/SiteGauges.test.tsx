@@ -16,7 +16,7 @@ const siteRow = {
   combined_max_monthly_visitation: 60,
   nearest_park_min_monthly_visitation: 10,
   nearest_park_overall_avg_monthly_visitation: 20,
-  nearest_park_max_monthly_visitation: 30
+  nearest_park_max_monthly_visitation: 30,
 };
 
 const siteInfo = [
@@ -26,7 +26,7 @@ const siteInfo = [
     combined_max_monthly_visitation: 60,
     nearest_park_min_monthly_visitation: 10,
     nearest_park_overall_avg_monthly_visitation: 20,
-    nearest_park_max_monthly_visitation: 30
+    nearest_park_max_monthly_visitation: 30,
   },
   {
     combined_min_monthly_visitation: 5,
@@ -34,7 +34,7 @@ const siteInfo = [
     combined_max_monthly_visitation: 20,
     nearest_park_min_monthly_visitation: 5,
     nearest_park_overall_avg_monthly_visitation: 10,
-    nearest_park_max_monthly_visitation: 20
+    nearest_park_max_monthly_visitation: 20,
   },
 ];
 
@@ -44,13 +44,13 @@ test("renders gauges with data", () => {
       siteRow={siteRow}
       siteInfo={siteInfo}
       demandProxy="Proximate Parks"
-    />
+    />,
   );
   expect(screen.getByTestId("plotly-gauge")).toBeInTheDocument();
-   expect(plotProps.data[0].value).toBe(20); 
-  expect(plotProps.data[0].gauge.axis.range).toEqual([5, 60]);
+  expect(plotProps.data[0].value).toBe(20);
+  expect(plotProps.data[0].gauge.axis.range).toEqual([5, 20]);
   expect(plotProps.data[1].value).toBe(40);
-  expect(plotProps.data[1].gauge.axis.range).toEqual([5, 40]);
+  expect(plotProps.data[1].gauge.axis.range).toEqual([10, 40]);
   expect(plotProps.data[2].value).toBe(60);
-  expect(plotProps.data[2].gauge.axis.range).toEqual([5, 60]);
+  expect(plotProps.data[2].gauge.axis.range).toEqual([20, 60]);
 });

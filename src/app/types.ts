@@ -1,5 +1,8 @@
 //Feature Type
-export type FeatureSelection = { type: "site" | "vc"; id: string | number } | null;
+export type FeatureSelection = {
+  type: "site" | "vc";
+  id: string | number;
+} | null;
 
 export type SiteInfoRow = {
   id: string;
@@ -47,4 +50,16 @@ export type VisitationRow = {
   avg_recreation_visits: number;
   min_recreation_visits: number;
   max_recreation_visits: number;
+};
+
+export type VCPointRow = {
+  id: string | number;
+  unitcode: string;
+  geometry: string;
+};
+
+export type SitePolyRow = {
+  id: string;
+  geometry: string;
+  parks_within_30_mi_unitcodes: string;
 };

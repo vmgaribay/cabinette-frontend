@@ -1,9 +1,11 @@
-import { NextResponse } from 'next/server';
-import { Pool } from 'pg';
-import { SiteInfoRow } from '@/app/types';
+import { NextResponse } from "next/server";
+import { Pool } from "pg";
+import { SiteInfoRow } from "@/app/types";
 
 const globalForPool = global as unknown as { pool: Pool | undefined };
-const pool = globalForPool.pool ?? new Pool({ connectionString: process.env.DATABASE_URL });
+const pool =
+  globalForPool.pool ??
+  new Pool({ connectionString: process.env.DATABASE_URL });
 if (!globalForPool.pool) globalForPool.pool = pool;
 
 export async function GET() {
@@ -45,6 +47,9 @@ export async function GET() {
     const { rows } = await pool.query(query);
     return NextResponse.json(rows as SiteInfoRow[]);
   } catch (error) {
-    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
+    return NextResponse.json(
+      { error: (error as Error).message },
+      { status: 500 },
+    );
   }
 }

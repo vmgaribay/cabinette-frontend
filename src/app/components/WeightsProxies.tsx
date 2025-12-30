@@ -9,10 +9,16 @@ const demandMetrics = [
 ];
 const competitionProxies = [
   { label: "Lodging Near Site", value: "Lodging Near Site" },
-  { label: "Lodging Near Proximate Parks", value: "Lodging Near Proximate Parks" },
+  {
+    label: "Lodging Near Proximate Parks",
+    value: "Lodging Near Proximate Parks",
+  },
 ];
 const proximityProxies = [
-  { label: "Avg. Distance to Proximate Parks", value: "Avg. Distance to Proximate Parks" },
+  {
+    label: "Avg. Distance to Proximate Parks",
+    value: "Avg. Distance to Proximate Parks",
+  },
   { label: "Distance to Nearest Park", value: "Distance to Nearest Park" },
 ];
 const accessibilityProxies = [
@@ -53,53 +59,103 @@ export default function WeightsProxies({
   setCompetitionProxy: (v: string) => void;
   proximityProxy: string;
   setProximityProxy: (v: string) => void;
-
 }) {
-
-    
-
   return (
     <div>
-    <h2>Adjustable Weights and Proxies</h2>
+      <h2>Adjustable Weights and Proxies</h2>
       <div>
         <label>Demand Weight: {demandWeight}</label>
-        <input className="slider"type="range" min={0} max={1} step={0.05} value={demandWeight} onChange={e => setDemandWeight(Number(e.target.value))} />
-        <select className="drop-down" value={demandProxy} onChange={e => setDemandProxy(e.target.value)}>
-          {demandProxies.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+        <input
+          className="slider"
+          type="range"
+          min={0}
+          max={1}
+          step={0.05}
+          value={demandWeight}
+          onChange={(e) => setDemandWeight(Number(e.target.value))}
+        />
+        <select
+          className="drop-down"
+          value={demandProxy}
+          onChange={(e) => setDemandProxy(e.target.value)}
+        >
+          {demandProxies.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
         </select>
-        <select className="drop-down" value={demandMetric} onChange={e => setDemandMetric(e.target.value)}>
-          {demandMetrics.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+        <select
+          className="drop-down"
+          value={demandMetric}
+          onChange={(e) => setDemandMetric(e.target.value)}
+        >
+          {demandMetrics.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
         </select>
       </div>
       <div>
         <label>Competition Weight: {competitionWeight}</label>
-        <input className="slider" type="range" min={0} max={1} step={0.05} value={competitionWeight} onChange={e => setCompetitionWeight(Number(e.target.value))} />
-        <select className="drop-down" value={competitionProxy} onChange={e => setCompetitionProxy(e.target.value)}>
-          {competitionProxies.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+        <input
+          className="slider"
+          type="range"
+          min={0}
+          max={1}
+          step={0.05}
+          value={competitionWeight}
+          onChange={(e) => setCompetitionWeight(Number(e.target.value))}
+        />
+        <select
+          className="drop-down"
+          value={competitionProxy}
+          onChange={(e) => setCompetitionProxy(e.target.value)}
+        >
+          {competitionProxies.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
         </select>
       </div>
       <div>
         <label>Proximity Weight: {proximityWeight}</label>
-        <input className="slider" type="range" min={0} max={1} step={0.05} value={proximityWeight} onChange={e => setProximityWeight(Number(e.target.value))} />
-        <select className="drop-down" value={proximityProxy} onChange={e => setProximityProxy(e.target.value)}>
-          {proximityProxies.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+        <input
+          className="slider"
+          type="range"
+          min={0}
+          max={1}
+          step={0.05}
+          value={proximityWeight}
+          onChange={(e) => setProximityWeight(Number(e.target.value))}
+        />
+        <select
+          className="drop-down"
+          value={proximityProxy}
+          onChange={(e) => setProximityProxy(e.target.value)}
+        >
+          {proximityProxies.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
         </select>
       </div>
-<div>
-  <label>Accessibility Weight: {accessibilityWeight}</label>
-  <input
-    className="slider"
-    type="range"
-    min={0}
-    max={1}
-    step={0.05}
-    value={accessibilityWeight}
-    onChange={e => setAccessibilityWeight(Number(e.target.value))}
-  />
-  <span style={{ marginLeft: 8 }}>
-    {accessibilityProxies[0].label}
-  </span>
-</div>
+      <div>
+        <label>Accessibility Weight: {accessibilityWeight}</label>
+        <input
+          className="slider"
+          type="range"
+          min={0}
+          max={1}
+          step={0.05}
+          value={accessibilityWeight}
+          onChange={(e) => setAccessibilityWeight(Number(e.target.value))}
+        />
+        <span style={{ marginLeft: 8 }}>{accessibilityProxies[0].label}</span>
+      </div>
     </div>
   );
 }
