@@ -15,27 +15,27 @@ Inspired by the Power BI dasboard created for Cabinette, this is a similar inter
 ├───src
 │   └───app
 |       ⋮
-|       ├───globals.css # styles for app-specific elements
-│       ├───page.tsx # main page/entry point
-│       ├───api # Next.js API routes
-│       │   ├───details # fetch site and visitor center information
+|       ├───globals.css           # styles for app-specific elements
+│       ├───page.tsx              # main page/entry point
+│       ├───api                   # Next.js API routes
+│       │   ├───details           # fetch site and visitor center information
 │       │   │   ├───site_info/route.ts
 │       │   │   ├───vc_info/route.ts
 │       │   │   └───visitation/route.ts
-│       │   └───map # fetch data for map display
+│       │   └───map               # fetch data for map display
 │       │       ├───site-polygons/route.ts
 │       │       ├───unitcodes_names/route.ts
 │       │       └───vc-points/route.ts
 │       └───components
-│           ├───DefaultMap.tsx # base interactive map
-│           ├───FilteredMap.tsx # filters for map
-│           ├───RankingTable.tsx # top 10 table
-│           ├───SiteGauges.tsx # visitation comparison
-│           ├───TextDetails.tsx # additional site/park info
-│           ├───VCPlot.tsx # monthly visitation for park
+│           ├───DefaultMap.tsx     # base interactive map
+│           ├───FilteredMap.tsx    # filters for map
+│           ├───RankingTable.tsx   # top 10 table
+│           ├───SiteGauges.tsx     # visitation comparison
+│           ├───TextDetails.tsx    # additional site/park info
+│           ├───VCPlot.tsx         # monthly visitation for park
 │           ├───WeightsProxies.tsx # adjustable scoring weights and proxies
-│           └───__tests__ # unit tests for components
-└───__mocks__/mockStyles.ts # empty style for unit tests
+│           └───__tests__          # unit tests for components
+└───__mocks__/mockStyles.ts        # empty style for unit tests
 ```
 
 ## Local Testing
