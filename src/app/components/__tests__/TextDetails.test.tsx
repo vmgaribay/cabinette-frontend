@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import TextDetails from "../textdetails";
+import TextDetails from "../TextDetails";
 
 const mockSiteInfo = [
   {

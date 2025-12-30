@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import FilteredMap from "../filteredmap";
+import FilteredMap from "../FilteredMap";
 
-jest.mock("../defaultmap", () => () => <div data-testid="dynamic-map" />);
+jest.mock("../DefaultMap", () => () => <div data-testid="dynamic-map" />);
 
 const parksMock = [
   { unitcode: "JOTR", parkname: "Joshua Tree NP" },
