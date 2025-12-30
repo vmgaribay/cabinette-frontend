@@ -1,3 +1,4 @@
+import { SiteInfoRow, VCInfoRow, VisitationRow } from "../types";
 
 export default function TextDetails({
   selectedFeature,
@@ -11,16 +12,16 @@ export default function TextDetails({
   proximityProxy,
 }: {
   selectedFeature: { type: "site" | "vc"; id: string } | null;
-  siteInfo: any[];
-  vcInfo: any[];
-  visitation: any[];
+  siteInfo: SiteInfoRow[];
+  vcInfo: VCInfoRow[];
+  visitation: VisitationRow[];
   score?: number;
   competitionProxy?: string;
   demandProxy?: string;
   demandMetric?: string;
   proximityProxy?: string;
 }) {
-  if (!selectedFeature) return <div>Select a Visitor Center or Candidate Site for details.</div>;
+  if (!selectedFeature) return <h3>Select a Visitor Center or Candidate Site for More Details.</h3>;
 
   // Fetch row data
   const siteRow = selectedFeature.type === "site"
@@ -70,13 +71,13 @@ export default function TextDetails({
   }
 
   return (
-    <div style={{ border: "1px solid #ccc", padding: 16, borderRadius: 8, background: "#fafafa" }}>
+    <div className="detail-card">
       {selectedFeature.type === "vc" && vcRow && (
         <>
           <h2><b>Visitor Center {selectedFeature.id} Details</b></h2>
           <div><b>Park or Monument Name:</b> {parkname ?? unitcode}</div>
-          <div><b>NPS Building Name:</b> {vcRow.visitor_center_name}</div>
-          <div><b>Number of Viable Sites:</b> {vcRow.vc_site_count}</div>
+          <div><b>NPS Building Name:</b> {buildingName}</div>
+          <div><b>Number of Viable Sites:</b> {siteCount}</div>
         </>
       )}
       {selectedFeature.type === "site" && siteRow && (
@@ -84,7 +85,7 @@ export default function TextDetails({
           <h2><b>Candidate Site {selectedFeature.id} Details</b></h2>
           <div><b>Score:</b> {score !== undefined ? score.toFixed(3) : "N/A"}</div>
           <div><b>Proximate Park(s):</b> {siteRow.parks_within_30_mi_names}</div>
-          <div><b>Distance to Road/Transportation:</b> {siteRow.nearest_road_distance_mi.toFixed(1)} mi | {siteRow.nearest_road_distance_km.toFixed(1)} km   Type: {siteRow.nearest_road_type}</div>
+          <div><b>Distance to Road/Transportation:</b> {siteRow.nearest_road_distance_mi.toFixed(1)} mi | {siteRow.nearest_road_distance_km.toFixed(1)} km   <b>Type:</b> {siteRow.nearest_road_type}</div>
           <div><b>{lodgingLabel}:</b> {lodgingValue} Alternatives</div>
           <div><b>{visitationLabel}:</b>   {typeof visitationValue === "number"
     ? visitationValue.toLocaleString(undefined, { maximumFractionDigits: 0 })

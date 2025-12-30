@@ -60,10 +60,10 @@ export default function SiteGauges({ siteRow, siteInfo, demandProxy }) {
         }
       ]}
       layout={{
-        margin: { t: 50, b: 0, l: 32, r: 35 },
-        paper_bgcolor: "white"
+        margin: { t: 50, b: 0, l: 72, r: 75 },
+        paper_bgcolor: "transparent"
       }}
-      style={{ width: "100%", height: "100%" }}
+      style={{ width: "100%", height: "80%" }}
       useResizeHandler
     />
   );

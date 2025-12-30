@@ -22,11 +22,32 @@ export default function VCVisitationPlot({ visitation, unitcode }) {
       ]}
       layout={{
         title: 'Monthly Visitation',
-        xaxis: { title: 'Month' },
-        yaxis: { title: 'Visits' },
-        legend: { orientation: 'h' }
+        xaxis: { title: {text: 'Month', font: {
+          family: "'Lucida Sans', 'Perpetua', serif",
+          size: 16,
+          color: "rgb(154,167,193)"}},        
+          tickfont: {
+            family: "'Lucida Sans', 'Perpetua', serif",
+            color: "rgb(154,167,193)"
+        }},
+        yaxis: { title: {text: 'Visits', font: {
+          family: "'Lucida Sans', 'Perpetua', serif",
+          size: 16,
+          color: "rgb(154,167,193)" }},
+          tickfont: {
+            family: "'Lucida Sans', 'Perpetua', serif",
+            color: "rgb(154,167,193)"
+        }},
+        legend: { orientation: 'h', font: {
+          family: "'Lucida Sans', 'Perpetua', serif",
+          color: "rgb(154,167,193)" }},
+        paper_bgcolor: "transparent",
+        plot_bgcolor: "transparent",
+        margin: { t: 20, b: 40, l: 70, r: 40 }
+
+
       }}
-      style={{ width: "100%", height: 350 }}
+      style={{ width: "100%", height: "80%" }}
     />
   );
 }

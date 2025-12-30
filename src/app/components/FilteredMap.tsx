@@ -1,11 +1,22 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import dynamic from "next/dynamic";
+import RankingTable from "./RankingTable";
+import { SiteInfoRow } from "../types";
 const DynamicMap = dynamic(() => import("./DefaultMap"), { ssr: false });
 
 type Park = { unitcode: string; parkname: string };
 
-export default function FilteredMap({ sitesVisible, selectedFeature, setSelectedFeature }: { sitesVisible?: (ids: string[]) => void; selectedFeature: string | number | null; setSelectedFeature: (feature: string | number | null) => void }) {
+export default function FilteredMap({ sitesVisible, selectedFeature, setSelectedFeature,  scoredSites,
+  siteInfo,
+  visibleSiteIds,
+}: {
+  sitesVisible?: (ids: string[]) => void;
+  selectedFeature: string | number | null;
+  setSelectedFeature: (feature: string | number | null) => void;
+  scoredSites: (SiteInfoRow & { score: number })[];
+  siteInfo: SiteInfoRow[];
+  visibleSiteIds: string[];}) {
   const [parks, setParks] = useState<Park[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [mapUnitcodes, setMapUnitcodes] = useState<string[]>([]);
@@ -28,13 +39,13 @@ const handleChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
 
     return (
     <div style={{ display: "flex", gap: 12 }}>
-      <div style={{ width: 260 }}>
+      <div style={{ width: 280 }}>
         <label style={{ display: "block", marginBottom: 8 }}>Filter Site Visibility by Park/Monument:</label>
         <select
           multiple
           value={selected}
           onChange={handleChange}
-          style={{ width: "100%", height: 160 }}
+          className="multi-select"
         >
         {[...parks]
           .sort((a, b) => a.parkname.localeCompare(b.parkname))
@@ -62,7 +73,15 @@ const handleChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
           >
             Clear Filters
           </button>
-        </div>
+                  </div>
+
+          <RankingTable
+          scoredSites={scoredSites}
+          selectedFeature={selectedFeature}
+          setSelectedFeature={setSelectedFeature}
+          siteInfo={siteInfo}
+          visibleSiteIds={visibleSiteIds}
+        />
       </div>
 
       <div style={{ flex: 1, height: 600 }}>

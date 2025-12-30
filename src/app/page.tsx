@@ -1,17 +1,17 @@
 "use client";
 import { useEffect, useState, useCallback, useMemo } from "react";
-import TopSites from "./components/TopSites";
+import WeightsProxies from "./components/WeightsProxies";
 import FilteredMap from "./components/FilteredMap";
 import TextDetails from "./components/TextDetails";
 import VCVisitationPlot from "./components/VCPlot";
 import SiteGauges from "./components/SiteGauges";
-import { FeatureSelection } from "./types";
+import { FeatureSelection, SiteInfoRow, VCInfoRow, VisitationRow } from "./types";
 
 
 export default function Home() {
-  const [siteInfo, setSiteInfo] = useState<any[]>([]);
-  const [vcInfo, setVCInfo] = useState<any[]>([]);
-  const [visitation, setVisitation] = useState<any[]>([]);
+  const [siteInfo, setSiteInfo] = useState<SiteInfoRow[]>([]);
+  const [vcInfo, setVCInfo] = useState<VCInfoRow[]>([]);
+  const [visitation, setVisitation] = useState<VisitationRow[]>([]);
   const [visibleSiteIds, setVisibleSiteIds] = useState<string[]>([]);
   const [selectedFeature, setSelectedFeature] = useState<FeatureSelection | null>(null);
 
@@ -44,7 +44,7 @@ export default function Home() {
   }, []);
 
 
-  function getDemandCol(site) {
+  const getDemandCol = useCallback((site: SiteInfoRow) => {
     if (demandProxy === "Proximate Parks") {
       if (demandMetric === "Minimum") return site["combined_min_monthly_visitation_norm"];
       if (demandMetric === "Maximum") return site["combined_max_monthly_visitation_norm"];
@@ -56,25 +56,25 @@ export default function Home() {
       if (demandMetric === "Average") return site["nearest_park_overall_avg_monthly_visitation_norm"];
     }
     return 0;
-  }
+  }, [demandProxy, demandMetric]);
 
-  function getCompetitionCol(site) {
+  const getCompetitionCol = useCallback((site: SiteInfoRow) => {
     if (competitionProxy === "Lodging Near Site") return site["lodging_for_site_norm"];
     if (competitionProxy === "Lodging Near Proximate Parks") return site["combined_lodging_norm"];
     return 0;
-  }
+  }, [competitionProxy]);
 
-  function getProximityCol(site) {
+  const getProximityCol = useCallback((site: SiteInfoRow) => {
     if (proximityProxy === "Avg. Distance to Proximate Parks") return site["combined_vc_distance_norm"];
     if (proximityProxy === "Distance to Nearest Park") return site["nearest_vc_distance_norm"];
     return 0;
-  }
+  }, [proximityProxy]);
 
-  function getAccessibilityCol(site) {
+  const getAccessibilityCol = useCallback((site: SiteInfoRow) => {
     return site["nearest_road_distance_norm"];
-  }
+  }, []);
 
-  const computeScore = useCallback((site: any) => {
+  const computeScore = useCallback((site: SiteInfoRow) => {
     const demandCol = getDemandCol(site);
     const competitionCol = getCompetitionCol(site);
     const proximityCol = getProximityCol(site);
@@ -96,14 +96,14 @@ export default function Home() {
   [siteInfo, computeScore]
 );
   const filteredScoredSites = useMemo(() => {
-    const filtered = visibleSiteIds && visibleSiteIds.length > 0
-      ? siteInfo.filter(site => visibleSiteIds.includes(site.id))
-      : siteInfo;
+    const filtered =
+      visibleSiteIds && visibleSiteIds.length > 0
+        ? scoredSites.filter(site => visibleSiteIds.includes(site.id))
+        : scoredSites;
     return filtered
-      .map(site => ({ ...site, score: computeScore(site) }))
       .sort((a, b) => b.score - a.score)
       .slice(0, 10);
-  }, [siteInfo, visibleSiteIds, computeScore]);
+  }, [scoredSites, visibleSiteIds]);
 
   const selectedSiteScore = useMemo(() => {
     if (selectedFeature?.type === "site") {
@@ -118,12 +118,16 @@ export default function Home() {
       <h1>Cabinette Map</h1>
       <div style={{ width: "80vw", maxWidth: 1200, height: 600 }}>
         <FilteredMap 
-          sitesVisible={setVisibleSiteIds} 
-          selectedFeature={selectedFeature} 
-          setSelectedFeature={setSelectedFeature} />
+        sitesVisible={setVisibleSiteIds} 
+        selectedFeature={selectedFeature} 
+        setSelectedFeature={setSelectedFeature}
+        scoredSites={filteredScoredSites}
+        siteInfo={siteInfo}
+        visibleSiteIds={visibleSiteIds}
+      />
       </div>
       <div style={{ width: "80vw", maxWidth: 1200, marginTop: 32 }}>
-        <TopSites siteInfo={siteInfo}
+        <WeightsProxies siteInfo={siteInfo}
           visibleSiteIds={visibleSiteIds} 
           selectedFeature={selectedFeature} 
           setSelectedFeature={setSelectedFeature}
@@ -146,7 +150,7 @@ export default function Home() {
           scoredSites={filteredScoredSites}
         />
       </div>
-      <div style={{ width: "80vw", maxWidth: 1200, marginTop: 32, marginBottom: 32 }}>
+      <div style={{ width: "80vw", maxWidth: 1200 }}>
         <TextDetails
           selectedFeature={selectedFeature}
           siteInfo={siteInfo}
@@ -159,7 +163,11 @@ export default function Home() {
           proximityProxy={proximityProxy}
       />
     </div>
-    <div style={{ width: "80vw", maxWidth: 1200, height: 350 }}>
+    <div className="plot-card" style={{ width: "80vw", maxWidth: 1200, height: 350 }}>
+        <h2>
+        {selectedFeature?.type === "vc" && `Monthly Visitation for ${visitation.find(p => p.unitcode === selectedFeature.id.split("_")[0])?.parkname}`}
+        {selectedFeature?.type === "site" && `Candidate Site ${selectedFeature.id} Monthly Visitation for ${demandProxy}`}
+  </h2>
       {selectedFeature?.type === "vc" && (
         <VCVisitationPlot  
           visitation={visitation}

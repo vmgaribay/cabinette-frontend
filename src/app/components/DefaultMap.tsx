@@ -2,33 +2,29 @@
 import { MapContainer, TileLayer, GeoJSON, CircleMarker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import type { FeatureCollection, Feature, Point } from "geojson";
 import { useEffect, useState, useRef ,useCallback} from "react";
 import { FeatureSelection } from "../types";
 
 
 type Props = { unitcodes?: string[] };
 
-async function fetchGeoJSON(url: string) {
-  const res = await fetch(url);
-  return res.json();
-}
 
-function FitVisible({ geojson, points }: { geojson?: any; points?: any[] }) {
+function FitVisible({ siteGeojson, vcPoints }: { siteGeojson?: FeatureCollection; vcPoints?: Feature<Point, Properties>[] }) {
   const map = useMap();
     useEffect(() => {
     if (!map) return;
-    if (!geojson || !geojson.features || geojson.features.length === 0) return;
-
+    if (!siteGeojson || !siteGeojson.features || siteGeojson.features.length === 0) return;
     let bounds: L.LatLngBoundsExpression | null = null;
 
-    if (geojson && geojson.features && geojson.features.length > 0) {
+    if (siteGeojson && siteGeojson.features && siteGeojson.features.length > 0) {
       const coords: [number, number][] = [];
-      geojson.features.forEach((feature: any) => {
+      siteGeojson.features.forEach((feature: Feature) => {
         const geom = feature.geometry;
         if (geom.type === "Polygon") {
           geom.coordinates[0].forEach(([lng, lat]: [number, number]) => coords.push([lat, lng]));
         } else if (geom.type === "MultiPolygon") {
-          geom.coordinates.forEach((poly: any) =>
+          geom.coordinates.forEach((poly: Feature) =>
             poly[0].forEach(([lng, lat]: [number, number]) => coords.push([lat, lng]))
           );
         }
@@ -36,27 +32,26 @@ function FitVisible({ geojson, points }: { geojson?: any; points?: any[] }) {
       if (coords.length > 0) bounds = L.latLngBounds(coords);
     }
 
-    if ((!bounds || bounds.isValid() === false) && points && points.length > 0) {
-      bounds = L.latLngBounds(points.map(([lng, lat]) => [lat, lng]));
+    if ((!bounds || bounds.isValid() === false) && vcPoints && vcPoints.length > 0) {
+      bounds = L.latLngBounds(vcPoints.map(([lng, lat]) => [lat, lng]));
     }
 
     if (bounds && bounds.isValid()) {
       map.fitBounds(bounds, { padding: [30, 30] });
     }
-  }, [geojson, points, map]);
+  }, [siteGeojson, vcPoints, map]);
 
   return null;
 }
 
 export default function Map({ unitcodes, sitesVisible, selectedFeature, setSelectedFeature }: Props & { sitesVisible?: (ids: string[]) => void, selectedFeature?: FeatureSelection | null, setSelectedFeature?: (feature: FeatureSelection | null) => void }) {
-  const [sitesGeojson, setSitesGeojson] = useState<any>(null);
-  const [vcsGeojson, setVCsGeojson] = useState<any>(null);
-  const [selected, setSelected] = useState<FeatureSelection | null>(null);
+  const [sitesGeojson, setSitesGeojson] = useState<FeatureCollection | null>(null);
+  const [vcsGeojson, setVCsGeojson] = useState<FeatureCollection<Point> | null>(null);
   const fetchIdRef = useRef(0);
 
 useEffect(() => {
     if (sitesGeojson && sitesGeojson.features) {
-      const ids = sitesGeojson.features.map((f: any) => f.properties.id);
+      const ids = sitesGeojson.features.map((feature: Feature) => feature.properties?.id);
       if (sitesVisible) sitesVisible(ids);
     }
   }, [sitesGeojson, sitesVisible]);
@@ -82,7 +77,7 @@ const params =
           setSitesGeojson(sitesData);
           setVCsGeojson(vcsData);
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         if (err.name !== "AbortError") console.error("Map fetch error:", err);
       }
     })();
@@ -90,24 +85,24 @@ const params =
     return () => controller.abort();
   }, [unitcodes]);
 
-  const vcPoints = vcsGeojson?.features?.map((f: any) => f.geometry.coordinates) ?? [];
+  const vcPoints = vcsGeojson?.features?.map((feature: Feature<Point, Properties>) => feature.geometry.coordinates) ?? [];
 
   const geoJsonStyle = useCallback(
-    (feature: any) => ({
+    (feature: Feature) => ({
       color:
-      selectedFeature?.type === "site" && selectedFeature.id === feature.properties.id
+      selectedFeature?.type === "site" && selectedFeature.id === feature.properties?.id
         ? "orange"
         : "#3388ff",
-    weight: selectedFeature?.type === "site" && selectedFeature.id === feature.properties.id ? 4 : 2,
+    weight: selectedFeature?.type === "site" && selectedFeature.id === feature.properties?.id ? 4 : 2,
     fillOpacity: 0.3,
   }),
   [selectedFeature]
   );
   
 const onEachFeature = useCallback(
-  (feature: any, layer: L.Layer) => {
+  (feature: Feature, layer: L.Layer) => {
     layer.on({
-      click: () => setSelectedFeature({ type: "site", id: feature.properties.id }),
+      click: () => setSelectedFeature({ type: "site", id: feature.properties?.id }),
     });
   },
   [setSelectedFeature]
@@ -117,7 +112,7 @@ const onEachFeature = useCallback(
   return (
     <MapContainer center={[39, -105]} zoom={6} style={{ height: "100%", width: "100%" }}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <FitVisible geojson={sitesGeojson} points={vcPoints} />
+      <FitVisible siteGeojson={sitesGeojson} vcPoints={vcPoints} />
 
       {sitesGeojson &&  (       
         <GeoJSON
@@ -127,13 +122,13 @@ const onEachFeature = useCallback(
           onEachFeature={onEachFeature}
         />
       )}
-      {vcsGeojson && vcsGeojson.features?.map((f: any) => {
-        const [lon, lat] = f.geometry.coordinates;
-        const isSelected = selected && selected.type === "vc" && selected.id === f.properties.id;
+      {vcsGeojson && vcsGeojson.features?.map((feature: Feature<Point, Properties>) => {
+        const [lon, lat] = feature.geometry.coordinates;
+        const isSelected = selectedFeature && selectedFeature.type === "vc" && selectedFeature.id === feature.properties.id;
 
         return (
           <CircleMarker
-            key={f.properties.id}
+            key={feature.properties.id}
             center={[lat, lon]}
             pathOptions={{
                 color: isSelected ? "orange" : "red",
@@ -141,11 +136,11 @@ const onEachFeature = useCallback(
               }}
             radius={isSelected ? 6 : 4}
             eventHandlers={{
-              click: () => setSelectedFeature({ type: "vc", id: f.properties.id }),
+              click: () => setSelectedFeature({ type: "vc", id: feature.properties.id }),
             }}
           >
             <Popup>
-              <strong>{f.properties.name ?? f.properties.id}</strong>
+              <strong>{feature.properties.name ?? feature.properties.id}</strong>
             </Popup>
           </CircleMarker>
         );

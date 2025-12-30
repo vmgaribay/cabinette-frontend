@@ -1,26 +1,101 @@
-@import "tailwindcss";
+@import "./style.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+
+
+
+.table-header {
+  border: 1px solid rgb(var(--light));
+  padding: 4px;
+  color: rgb(var(--light));
+  background: rgba(var(--dark), 0.7);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.multi-select {
+  width: 100%;
+  height: 130px;
+  background: rgb(var(--dark));
+  color: rgb(var(--light));
+  border: 1px solid rgb(var(--accent));
+  border-radius: 6px;
+  padding: 4px;
+  font-family: 'Lucida Sans', 'Perpetua', serif;
+
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.multi-select::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.multi-select::-webkit-scrollbar-thumb {
+  background: rgba(var(--xlight), 0.4);
+  border-radius: 4px;
+}
+
+.multi-select::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--xlight), 0.6);
+}
+
+.multi-select::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.detail-card {
+  background: rgba(var(--dark), 0.9);
+  color: rgb(var(--light));
+  border: 1px solid rgba(var(--accent), 0.4);
+  border-radius: 12px;
+  padding: 0 2rem 1rem 2rem;
+  margin: 2rem 0;
+  box-shadow: 0 4px 10px rgba(var(--dark), 0.4);
+  font-family: 'Lucida Sans', 'Perpetua', serif;
+  line-height: 1.5;
+}
+.detail-card h2 {
+  color: rgb(var(--accent));
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+.detail-card b {
+  color: rgb(var(--xlight));
+}
+.detail-card div {
+  margin-bottom: 0.75rem;
+}
+
+.plot-card {
+  background: rgba(var(--dark), 0.92);
+  color: rgb(var(--light));
+  border: 1.5px solid rgba(var(--accent), 0.35);
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(var(--dark), 0.35);
+  font-family: 'Lucida Sans', 'Perpetua', serif;
+
+
+}
+
+.plot-card h2 {
+  color: rgb(var(--xlight));
+  margin-bottom: 1rem;
+  margin-left: 2rem;
+  font-size: 1.5rem;
+}
+
+.slider {
+  width: 120px;
+  margin: 0 1rem 0 0.5rem;
+  accent-color: rgb(var(--accent));
+  background: transparent;
+  border-radius: 6px;
+  font-family: 'Lucida Sans', 'Perpetua', serif;
+
+}
+.drop-down {
+  margin-left: 0.5rem;
+  background: rgba(var(--xlight), 0.06);
+  color: rgb(var(--light));
+  border: 1px solid rgba(var(--accent),0.25);
+  border-radius: 8px;
+  font-family: 'Lucida Sans', 'Perpetua', serif;
+  padding: 0.25rem 0.5rem;
 }
