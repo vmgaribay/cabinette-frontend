@@ -61,11 +61,11 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Data
 
-The Postgres database was built as described in [Cabinette](https://github.com/vmgaribay/cabinette.git)
+The Postgres database was built as described in [Cabinette](https://github.com/vmgaribay/cabinette.git). Relevant tables are live on Neon and accessed via Next.js API routes. The pared-down database used by the application and instructions on hosting it remotely are available on Zenodo, [doi:10.5281/zenodo.18110980](https://doi.org/10.5281/zenodo.18110980).
 
 ## Deployment
 
-The application is deployed on Vercel at [https://cabinette-frontend.vercel.app/](https://cabinette-frontend.vercel.app/).
+The application is deployed on Vercel at [https://cabinette-frontend.vercel.app/](https://cabinette-frontend.vercel.app/). The Neon database connection string was set as the `DATABASE_URL` environment variable for deployment.
 
 ## Acknowledgements
 I acknowledge that I consulted resources such as GitHub Copilot (GPT-5, GPT-4.1), Plotly and Leaflet video tutorials, and various online forums in the construction of this project.
