@@ -222,7 +222,12 @@ export default function Map({
 
   const scoreColormap = useCallback(
     (score: number) => {
-      if (maxScore === minScore || minScore===undefined || maxScore===undefined) return "rgba(143, 178, 248, 0.5)";
+      if (
+        maxScore === minScore ||
+        minScore === undefined ||
+        maxScore === undefined
+      )
+        return "rgba(143, 178, 248, 0.5)";
       const t = (score - minScore) / (maxScore - minScore);
       const minRgb = [255, 255, 255];
       const maxRgb = [0, 75, 224];
