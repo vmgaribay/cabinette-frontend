@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import dynamic from "next/dynamic";
 import RankingTable from "./RankingTable";
 import { FeatureSelection, SiteInfoRow } from "../types";
@@ -25,6 +25,14 @@ export default function FilteredMap({
   const [parks, setParks] = useState<Park[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [mapUnitcodes, setMapUnitcodes] = useState<string[]>([]);
+
+  const scoreID = useMemo(() => {
+    const map: Record<string, number> = {};
+    scoredSites.forEach((site) => {
+      map[site.id] = site.score;
+    });
+    return map;
+  }, [scoredSites]);
 
   useEffect(() => {
     fetch("/api/map/unitcodes_names")
@@ -52,7 +60,13 @@ export default function FilteredMap({
   return (
     <div style={{ display: "flex", gap: 12 }}>
       <div style={{ width: 280 }}>
-        <label style={{ display: "block", marginBottom: 8 }}>
+        <label
+          style={{
+            display: "block",
+            marginBottom: 8,
+            color: "rgb(215, 218, 223)",
+          }}
+        >
           Filter Site Visibility by Park/Monument:
         </label>
         <select
@@ -110,6 +124,7 @@ export default function FilteredMap({
         <DynamicMap
           key={unitcodesKey}
           unitcodes={mapUnitcodes}
+          scoreID={scoreID}
           sitesVisible={sitesVisible}
           selectedFeature={selectedFeature}
           setSelectedFeature={setSelectedFeature}

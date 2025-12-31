@@ -79,6 +79,11 @@ a.active {
   display: inline-block;
   font-family: "Lucida Sans", "Perpetua", serif;
 }
+#header-scroll.shrink h1 a {
+  position: relative;
+  z-index: 1001;
+}
+
 /* Navigation*/
 nav {
   position: fixed;

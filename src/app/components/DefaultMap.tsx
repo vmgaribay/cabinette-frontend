@@ -14,10 +14,8 @@ import type {
   Point,
   GeoJsonProperties,
 } from "geojson";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { FeatureSelection } from "../types";
-
-type Props = { unitcodes?: string[] };
 
 function FitVisible({
   siteGeojson,
@@ -82,12 +80,76 @@ function FitVisible({
   return null;
 }
 
+function ZoomToSelection({
+  selectedFeature,
+  sitesGeojson,
+  vcsGeojson,
+}: {
+  selectedFeature?: FeatureSelection | null;
+  sitesGeojson?: FeatureCollection;
+  vcsGeojson?: FeatureCollection<Point>;
+}) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!selectedFeature) return;
+
+    if (selectedFeature.type === "site" && sitesGeojson) {
+      map.closePopup();
+
+      const feature = sitesGeojson.features.find(
+        (f) => f.properties?.id === selectedFeature.id,
+      );
+      if (feature) {
+        let coords: [number, number][] = [];
+        if (feature.geometry.type === "Polygon") {
+          coords = feature.geometry.coordinates[0].map(([lng, lat]) => [
+            lat,
+            lng,
+          ]);
+        } else if (feature.geometry.type === "MultiPolygon") {
+          coords = feature.geometry.coordinates.flatMap((polygon) =>
+            polygon.flatMap((ring) =>
+              ring
+                .filter(
+                  (c): c is [number, number] =>
+                    Array.isArray(c) &&
+                    c.length === 2 &&
+                    typeof c[0] === "number" &&
+                    typeof c[1] === "number",
+                )
+                .map(([lng, lat]) => [lat, lng] as [number, number]),
+            ),
+          );
+        }
+
+        if (coords.length > 0) {
+          map.fitBounds(coords, { maxZoom: 10, padding: [30, 30] });
+        }
+      }
+    } else if (selectedFeature.type === "vc" && vcsGeojson) {
+      const feature = vcsGeojson.features.find(
+        (f) => f.properties?.id === selectedFeature.id,
+      );
+      if (feature) {
+        const [lng, lat] = feature.geometry.coordinates;
+        map.flyTo([lat, lng], 8, { duration: 1 });
+      }
+    }
+  }, [selectedFeature, sitesGeojson, vcsGeojson, map]);
+
+  return null;
+}
+
 export default function Map({
   unitcodes,
   sitesVisible,
+  scoreID,
   selectedFeature,
   setSelectedFeature,
-}: Props & {
+}: {
+  unitcodes?: string[];
+  scoreID: Record<string, number>;
   sitesVisible?: (ids: string[]) => void;
   selectedFeature?: FeatureSelection | null;
   setSelectedFeature?: (feature: FeatureSelection | null) => void;
@@ -99,6 +161,13 @@ export default function Map({
     FeatureCollection<Point> | undefined
   >(undefined);
   const fetchIdRef = useRef(0);
+
+  const { minScore, maxScore } = useMemo(() => {
+    if (!scoreID) return { minScore: undefined, maxScore: undefined };
+    const min = Math.min(...Object.values(scoreID));
+    const max = Math.max(...Object.values(scoreID));
+    return { minScore: min, maxScore: max };
+  }, [scoreID]);
 
   useEffect(() => {
     if (sitesGeojson && sitesGeojson.features) {
@@ -151,21 +220,48 @@ export default function Map({
         feature.geometry.coordinates as [number, number],
     ) ?? [];
 
+  const scoreColormap = useCallback(
+    (score: number) => {
+      if (
+        maxScore === minScore ||
+        minScore === undefined ||
+        maxScore === undefined
+      )
+        return "rgba(143, 178, 248, 0.5)";
+      const t = (score - minScore) / (maxScore - minScore);
+      const minRgb = [255, 255, 255];
+      const maxRgb = [0, 75, 224];
+      const lerp = (a: number, b: number) => Math.round(a + (b - a) * t);
+      const r = lerp(minRgb[0], maxRgb[0]);
+      const g = lerp(minRgb[1], maxRgb[1]);
+      const b = lerp(minRgb[2], maxRgb[2]);
+      const a = lerp(0.5, 0.9);
+      return `rgba(${r},${g},${b},${a})`;
+    },
+    [minScore, maxScore],
+  );
+
   const geoJsonStyle = useCallback(
-    (feature?: Feature) => ({
-      color:
-        selectedFeature?.type === "site" &&
-        selectedFeature.id === feature?.properties?.id
-          ? "orange"
-          : "#3388ff",
-      weight:
-        selectedFeature?.type === "site" &&
-        selectedFeature.id === feature?.properties?.id
-          ? 4
-          : 2,
-      fillOpacity: 0.3,
-    }),
-    [selectedFeature],
+    (feature?: Feature) => {
+      const id = String(feature?.properties?.id ?? "");
+      const score = scoreID[id];
+      const fillColor =
+        score !== undefined ? scoreColormap(score) : "rgb(143, 178, 248, 0.5)";
+      return {
+        color:
+          selectedFeature?.type === "site" &&
+          selectedFeature.id === feature?.properties?.id
+            ? "orange"
+            : fillColor,
+        weight:
+          selectedFeature?.type === "site" &&
+          selectedFeature.id === feature?.properties?.id
+            ? 4
+            : 2,
+        fillOpacity: 0.8,
+      };
+    },
+    [selectedFeature, scoreColormap, scoreID],
   );
 
   const onEachFeature = useCallback(
@@ -189,6 +285,11 @@ export default function Map({
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <FitVisible siteGeojson={sitesGeojson} vcPoints={vcPoints} />
+      <ZoomToSelection
+        selectedFeature={selectedFeature}
+        sitesGeojson={sitesGeojson}
+        vcsGeojson={vcsGeojson}
+      />
 
       {sitesGeojson && (
         <GeoJSON
