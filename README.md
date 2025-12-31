@@ -1,4 +1,4 @@
-# Cabinette Online
+# Cabinette (Online Edition)
 
 Inspired by the Power BI dasboard created for Cabinette, this is a similar interactive dashboard for exploring and ranking candidate cabin sites near U.S. National Parks and Monuments. This version is an online application for improved accessibility which will be built with Next.js, React, and TypeScript.
 
@@ -68,7 +68,7 @@ The Postgres database was built as described in [Cabinette](https://github.com/v
 The application is deployed on Vercel at [https://cabinette-frontend.vercel.app/](https://cabinette-frontend.vercel.app/). The Neon database connection string was set as the `DATABASE_URL` environment variable for deployment.
 
 ## Acknowledgements
-I acknowledge that I consulted resources such as GitHub Copilot (GPT-5, GPT-4.1), Plotly and Leaflet video tutorials, and various online forums in the construction of this project.
+I acknowledge that I consulted resources such as GitHub Copilot (GPT-5, GPT-5 mini, GPT-4.1, Grok Code Fast 1), Plotly and Leaflet video tutorials, and various online forums in the construction of this project.
 
 ## Contact
 
