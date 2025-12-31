@@ -2,7 +2,7 @@
 
 Inspired by the Power BI dasboard created for Cabinette, this is a similar interactive dashboard for exploring and ranking candidate cabin sites near U.S. National Parks and Monuments. This version is an online application for improved accessibility which will be built with Next.js, React, and TypeScript.
 
-## Planned Functionalities
+## Functionalities
 
 - Interactive map (Leaflet)
 - Dynamic site scoring and ranking
@@ -65,7 +65,7 @@ The Postgres database was built as described in [Cabinette](https://github.com/v
 
 ## Deployment
 
-Deployment on [Vercel](https://vercel.com/) is planned to accommodate dynamic features.
+The application is deployed on Vercel at [https://cabinette-frontend.vercel.app/](https://cabinette-frontend.vercel.app/).
 
 ## Acknowledgements
 I acknowledge that I consulted resources such as GitHub Copilot (GPT-5, GPT-4.1), Plotly and Leaflet video tutorials, and various online forums in the construction of this project.
