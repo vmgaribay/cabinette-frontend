@@ -63,7 +63,7 @@ export default function WeightsProxies({
   return (
     <div>
       <h2>Adjustable Weights and Proxies</h2>
-      <div>
+      <div className="proxy-row">
         <label>Demand Weight: {demandWeight}</label>
         <input
           className="slider"
@@ -97,7 +97,7 @@ export default function WeightsProxies({
           ))}
         </select>
       </div>
-      <div>
+      <div className="proxy-row">
         <label>Competition Weight: {competitionWeight}</label>
         <input
           className="slider"
@@ -120,7 +120,7 @@ export default function WeightsProxies({
           ))}
         </select>
       </div>
-      <div>
+      <div className="proxy-row">
         <label>Proximity Weight: {proximityWeight}</label>
         <input
           className="slider"
@@ -143,7 +143,7 @@ export default function WeightsProxies({
           ))}
         </select>
       </div>
-      <div>
+      <div className="proxy-row">
         <label>Accessibility Weight: {accessibilityWeight}</label>
         <input
           className="slider"
@@ -154,7 +154,16 @@ export default function WeightsProxies({
           value={accessibilityWeight}
           onChange={(e) => setAccessibilityWeight(Number(e.target.value))}
         />
-        <span style={{ marginLeft: 8 }}>{accessibilityProxies[0].label}</span>
+        <span
+          style={{
+            marginLeft: 8,
+            fontFamily: "Lucida Sans, Perpetua, serif",
+            fontSize: 13,
+            paddingLeft: 8,
+          }}
+        >
+          {accessibilityProxies[0].label}
+        </span>
       </div>
     </div>
   );
