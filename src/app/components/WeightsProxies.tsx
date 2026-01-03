@@ -63,8 +63,9 @@ export default function WeightsProxies({
   return (
     <div>
       <h2>Adjustable Weights and Proxies</h2>
-      <div>
-        <label>Demand Weight: {demandWeight}</label>
+      <div className="proxy-row">
+        <label>Demand Weight: </label>
+        <span>{demandWeight}</span>
         <input
           className="slider"
           type="range"
@@ -97,8 +98,9 @@ export default function WeightsProxies({
           ))}
         </select>
       </div>
-      <div>
-        <label>Competition Weight: {competitionWeight}</label>
+      <div className="proxy-row">
+        <label>Competition Weight: </label>
+        <span>{competitionWeight}</span>
         <input
           className="slider"
           type="range"
@@ -120,8 +122,9 @@ export default function WeightsProxies({
           ))}
         </select>
       </div>
-      <div>
-        <label>Proximity Weight: {proximityWeight}</label>
+      <div className="proxy-row">
+        <label>Proximity Weight: </label>
+        <span>{proximityWeight}</span>
         <input
           className="slider"
           type="range"
@@ -143,8 +146,9 @@ export default function WeightsProxies({
           ))}
         </select>
       </div>
-      <div>
-        <label>Accessibility Weight: {accessibilityWeight}</label>
+      <div className="proxy-row">
+        <label>Accessibility Weight: </label>
+        <span>{accessibilityWeight}</span>
         <input
           className="slider"
           type="range"
@@ -154,7 +158,16 @@ export default function WeightsProxies({
           value={accessibilityWeight}
           onChange={(e) => setAccessibilityWeight(Number(e.target.value))}
         />
-        <span style={{ marginLeft: 8 }}>{accessibilityProxies[0].label}</span>
+        <span
+          style={{
+            marginLeft: 8,
+            fontFamily: "Lucida Sans, Perpetua, serif",
+            fontSize: 13,
+            paddingLeft: 11,
+          }}
+        >
+          {accessibilityProxies[0].label}
+        </span>
       </div>
     </div>
   );

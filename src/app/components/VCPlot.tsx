@@ -42,7 +42,7 @@ export default function VCVisitationPlot({
           type: "scatter",
           mode: "lines",
           name: "Minimum",
-          line: { color: "yellow" },
+          line: { color: "rgb(245, 220, 100)" },
         },
         {
           x: months,
@@ -50,7 +50,7 @@ export default function VCVisitationPlot({
           type: "scatter",
           mode: "lines",
           name: "Average",
-          line: { color: "blue" },
+          line: { color: "rgb(143, 178, 248)" },
         },
         {
           x: months,
@@ -58,11 +58,12 @@ export default function VCVisitationPlot({
           type: "scatter",
           mode: "lines",
           name: "Maximum",
-          line: { color: "green" },
+          line: { color: "rgb(100, 200, 140)" },
         },
       ]}
       layout={{
         xaxis: {
+          gridcolor: "rgba(154,167,193,0.25)",
           title: {
             text: "Month",
             font: {
@@ -77,6 +78,7 @@ export default function VCVisitationPlot({
           },
         },
         yaxis: {
+          gridcolor: "rgba(154,167,193,0.25)",
           title: {
             text: "Visits",
             font: {

@@ -17,9 +17,7 @@ export default function RankingTable({
     <div>
       <h2 style={{ textAlign: "center" }}>Top Sites by Score</h2>
 
-      <table
-        style={{ width: "100%", borderCollapse: "collapse", marginTop: -5 }}
-      >
+      <table className="ranking-table">
         <thead>
           <tr>
             <th className="table-header">Rank*</th>
@@ -31,25 +29,29 @@ export default function RankingTable({
           {scoredSites.map((site, idx) => (
             <tr
               key={site.id}
+              className="table-row"
               style={{
                 background:
                   selectedFeature?.type === "site" &&
                   selectedFeature.id === site.id
                     ? "rgba(215, 218, 223, 0.4)"
                     : undefined,
-                cursor: "pointer",
               }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = "rgba(143,178,248,0.08)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background =
+                  selectedFeature?.type === "site" &&
+                  selectedFeature.id === site.id
+                    ? "rgba(215, 218, 223, 0.12)"
+                    : "transparent")
+              }
               onClick={() => setSelectedFeature({ type: "site", id: site.id })}
             >
-              <td style={{ border: "1px solid #ccc", padding: 4 }}>
-                {idx + 1}
-              </td>
-              <td style={{ border: "1px solid #ccc", padding: 4 }}>
-                {site.id}
-              </td>
-              <td style={{ border: "1px solid #ccc", padding: 4 }}>
-                {site.score.toFixed(3)}
-              </td>
+              <td className="table-cell">{idx + 1}</td>
+              <td className="table-cell">{site.id}</td>
+              <td className="table-cell">{site.score.toFixed(3)}</td>
             </tr>
           ))}
         </tbody>

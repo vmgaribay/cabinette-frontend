@@ -1,10 +1,44 @@
 @import "./style.css";
+.ranking-table {
+  width: 95%;
+  border-collapse: collapse;
+  margin-top: -2px;
+  background: rgba(24, 20, 27, 0.85);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(24, 20, 27, 0.18);
+  border-radius: 10px;
+}
+
+.table-row {
+  border: none;
+  border-bottom: 1px solid rgba(215, 218, 223, 0.1);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.table-cell {
+  border: none;
+  border-bottom: 1px solid rgba(215, 218, 223, 0.3);
+  text-align: center;
+  padding: 4px 4px;
+}
 
 .table-header {
-  border: 1px solid rgb(var(--light));
+  border: none;
+  border-bottom: 1px solid rgb(var(--light));
   padding: 4px;
   color: rgb(var(--xlight));
   background: rgba(var(--dark), 0.7);
+  font-family: "Lucida Sans", "Perpetua", serif;
+}
+
+.multi-select-header {
+  font-family: "Lucida Sans", "Perpetua", serif;
+  color: rgb(var(--xlight));
+  padding: 2px;
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 
 .multi-select {
@@ -73,6 +107,20 @@
   margin-bottom: 1rem;
   margin-left: 2rem;
   font-size: 1.5rem;
+}
+
+.proxy-row {
+  display: grid;
+  grid-template-columns:
+    minmax(80px, 0.6fr)
+    minmax(10px, 0.1fr)
+    minmax(120px, 0.5fr)
+    minmax(220px, 1fr)
+    minmax(95px, 0.5fr)
+    minmax(0px, 1.2fr);
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .slider {

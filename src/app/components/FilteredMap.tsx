@@ -59,14 +59,8 @@ export default function FilteredMap({
 
   return (
     <div style={{ display: "flex", gap: 12 }}>
-      <div style={{ width: 280 }}>
-        <label
-          style={{
-            display: "block",
-            marginBottom: 8,
-            color: "rgb(215, 218, 223)",
-          }}
-        >
+      <div style={{ width: 330 }}>
+        <label className="multi-select-header">
           Filter Site Visibility by Park/Monument:
         </label>
         <select
@@ -91,9 +85,9 @@ export default function FilteredMap({
             marginTop: 8,
           }}
         >
-          <span style={{ fontSize: 12, color: "#666" }}>
-            Hold Ctrl (Windows) or Cmd (Mac) to select multiple parks. Use
-            button to clear selection.
+          <span style={{ fontSize: 12, color: "rgb(154, 167, 193, 0.8)" }}>
+            Hold Ctrl (Windows) or Cmd (Mac) to choose multiple locations of
+            interest. Use button to clear.
           </span>
           <button
             type="button"
@@ -101,8 +95,8 @@ export default function FilteredMap({
             style={{
               fontSize: 12,
               padding: "2px 8px",
-              background: "#eee",
-              border: "1px solid #220c0cff",
+              background: "rgb(215, 218, 223)",
+              border: "1px solid rgb(143, 178, 248)",
               borderRadius: 4,
               cursor: "pointer",
             }}
@@ -120,7 +114,9 @@ export default function FilteredMap({
         />
       </div>
 
-      <div style={{ flex: 1, height: 600 }}>
+      <div
+        style={{ flex: 1, height: 600, borderRadius: 16, overflow: "hidden" }}
+      >
         <DynamicMap
           key={unitcodesKey}
           unitcodes={mapUnitcodes}
