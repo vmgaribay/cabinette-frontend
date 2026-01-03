@@ -97,7 +97,7 @@ export default function SiteGauges({
             },
             bar: {
               color: "rgb(100, 200, 140)",
-              line: { color: "rgb(24, 20, 27)", width: 1 },
+              line: { color: "rgb(24, 20, 27)", width: 0.3 },
             },
             bgcolor: "lightgray",
             shape: "angular",
@@ -118,7 +118,7 @@ export default function SiteGauges({
             },
             bar: {
               color: "rgb(100, 200, 140)",
-              line: { color: "rgb(24, 20, 27)", width: 1 },
+              line: { color: "rgb(24, 20, 27)", width: 0.3 },
             },
             bgcolor: "lightgray",
             shape: "angular",
@@ -139,7 +139,7 @@ export default function SiteGauges({
             },
             bar: {
               color: "rgb(100, 200, 140)",
-              line: { color: "rgb(24, 20, 27)", width: 1 },
+              line: { color: "rgb(24, 20, 27)", width: 0.3 },
             },
             bgcolor: "lightgray",
             shape: "angular",

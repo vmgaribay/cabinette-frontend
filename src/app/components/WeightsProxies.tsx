@@ -64,7 +64,8 @@ export default function WeightsProxies({
     <div>
       <h2>Adjustable Weights and Proxies</h2>
       <div className="proxy-row">
-        <label>Demand Weight: {demandWeight}</label>
+        <label>Demand Weight: </label>
+        <span>{demandWeight}</span>
         <input
           className="slider"
           type="range"
@@ -98,7 +99,8 @@ export default function WeightsProxies({
         </select>
       </div>
       <div className="proxy-row">
-        <label>Competition Weight: {competitionWeight}</label>
+        <label>Competition Weight: </label>
+        <span>{competitionWeight}</span>
         <input
           className="slider"
           type="range"
@@ -121,7 +123,8 @@ export default function WeightsProxies({
         </select>
       </div>
       <div className="proxy-row">
-        <label>Proximity Weight: {proximityWeight}</label>
+        <label>Proximity Weight: </label>
+        <span>{proximityWeight}</span>
         <input
           className="slider"
           type="range"
@@ -144,7 +147,8 @@ export default function WeightsProxies({
         </select>
       </div>
       <div className="proxy-row">
-        <label>Accessibility Weight: {accessibilityWeight}</label>
+        <label>Accessibility Weight: </label>
+        <span>{accessibilityWeight}</span>
         <input
           className="slider"
           type="range"
@@ -159,7 +163,7 @@ export default function WeightsProxies({
             marginLeft: 8,
             fontFamily: "Lucida Sans, Perpetua, serif",
             fontSize: 13,
-            paddingLeft: 8,
+            paddingLeft: 11,
           }}
         >
           {accessibilityProxies[0].label}
