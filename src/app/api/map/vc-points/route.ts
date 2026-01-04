@@ -1,3 +1,17 @@
+/**
+ * API Route: GET /api/map/vc-points
+ *
+ * Returns a GeoJSON FeatureCollection of visitor center points for Leaflet.
+ * - Accepts optional query parameter: unitcodes.
+ * - Each feature includes geometry and properties: id, unitcode.
+ * - Responds with GeoJSON FeatureCollection for use in Leaflet.
+ *
+ * Environment:
+ * - DATABASE_URL: Connection string for the PostgreSQL database.
+ *
+ * Response: GeoJSON FeatureCollection.
+ * Status: 200 on success, 500 on error.
+ */
 import { VCPointRow } from "@/app/types";
 import { NextRequest, NextResponse } from "next/server";
 import { Pool } from "pg";
@@ -8,8 +22,11 @@ const pool =
   new Pool({ connectionString: process.env.DATABASE_URL });
 if (!globalForPool.pool) globalForPool.pool = pool;
 
-// Get visitor center points, format as FeatureCollection for Leaflet
-
+/**
+ * Handles GET requests for visitor center points.
+ * @param {NextRequest} req - Incoming request object.
+ * @returns {Promise<NextResponse>} GeoJSON FeatureCollection or error message.
+ */
 export async function GET(req: NextRequest) {
   try {
     const unitcodesParam = req.nextUrl.searchParams.get("unitcodes");

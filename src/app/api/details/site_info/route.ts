@@ -1,3 +1,16 @@
+/**
+ * API Route: GET /api/details/site_info
+ *
+ * Returns an array of site information objects.
+ * - Fetches details and statistics.
+ * - Responds with an array of SiteInfoRow objects.
+ *
+ * Environment:
+ * - DATABASE_URL: Connection string for the PostgreSQL database.
+ *
+ * Response: Array of SiteInfoRow objects.
+ * Status: 200 on success, 500 on error.
+ */
 import { NextResponse } from "next/server";
 import { Pool } from "pg";
 import { SiteInfoRow } from "@/app/types";
@@ -8,6 +21,10 @@ const pool =
   new Pool({ connectionString: process.env.DATABASE_URL });
 if (!globalForPool.pool) globalForPool.pool = pool;
 
+/**
+ * Handles GET requests for site information.
+ * @returns {Promise<NextResponse>} JSON response with an array of SiteInfoRow objects or an error message.
+ */
 export async function GET() {
   try {
     const query = `

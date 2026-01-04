@@ -1,3 +1,12 @@
+/**
+ * page.tsx
+ *
+ * Main page for the Cabinette Map application.
+ * - Fetches and manages site, visitor center, and visitation data.
+ * - Allows users to rank candidate cabin sites.
+ * - Integrates map, ranking, weights/proxies controls, and info/plots.
+ * - Handles user selection and dynamic scoring of sites.
+ */
 "use client";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import WeightsProxies from "./components/WeightsProxies";
@@ -205,7 +214,6 @@ export default function Home() {
             selectedFeature={selectedFeature}
             setSelectedFeature={setSelectedFeature}
             scoredSites={filteredScoredSites}
-            siteInfo={siteInfo}
             visibleSiteIds={visibleSiteIds}
           />
         </div>

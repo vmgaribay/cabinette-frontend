@@ -1,9 +1,14 @@
-//Feature Type
+/**
+ * Represents a selected feature, which can be a site or a visitor center.
+ */
 export type FeatureSelection = {
   type: "site" | "vc";
   id: string | number;
 } | null;
 
+/**
+ * Row of site information and visitation statistics.
+ */
 export type SiteInfoRow = {
   id: string;
   combined_min_monthly_visitation_norm: number;
@@ -36,6 +41,9 @@ export type SiteInfoRow = {
   nearest_park_overall_avg_monthly_visitation: number;
 };
 
+/**
+ * Row of visitor center information.
+ */
 export type VCInfoRow = {
   id: string;
   unitcode: string;
@@ -43,6 +51,9 @@ export type VCInfoRow = {
   vc_site_count: number;
 };
 
+/**
+ * Row of monthly visitation data for an NPS location.
+ */
 export type VisitationRow = {
   parkname: string;
   unitcode: string;
@@ -52,12 +63,18 @@ export type VisitationRow = {
   max_recreation_visits: number;
 };
 
+/**
+ * Row representing a visitor center point.
+ */
 export type VCPointRow = {
   id: string | number;
   unitcode: string;
   geometry: string;
 };
 
+/**
+ * Row representing a site polygon.
+ */
 export type SitePolyRow = {
   id: string;
   geometry: string;

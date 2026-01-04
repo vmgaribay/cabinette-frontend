@@ -1,3 +1,16 @@
+/**
+ * VCPlot.tsx
+ *
+ * React component for displaying a line plot of monthly visitor center visitation.
+ * - Plots minimum, average, and maximum recreation visits by month.
+ * - Filters data for the selected visitor center by unit code.
+ * - Uses Plotly for interactive data popups.
+ *
+ * Props:
+ * - visitation: Array of visitation data objects.
+ * - unitcode: Unit code for the visitor center to plot.
+ */
+
 import dynamic from "next/dynamic";
 import { VisitationRow } from "../types";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
@@ -17,6 +30,13 @@ const MONTHS = [
   "Dec",
 ];
 
+/**
+ * VCVisitationPlot component for plotting monthly visitation statistics.
+ * @param {Object} props
+ * @param {VisitationRow[]} props.visitation - Array of visitation data objects.
+ * @param {string} props.unitcode - Unit code for the selected visitor center.
+ * @returns {JSX.Element}
+ */
 export default function VCVisitationPlot({
   visitation,
   unitcode,
