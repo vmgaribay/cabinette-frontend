@@ -1,3 +1,18 @@
+/**
+ * API Route: GET /api/map/site-polygons
+ *
+ * Returns a GeoJSON FeatureCollection of site polygons.
+ * - Accepts optional query parameter: unitcodes.
+ * - Fetches site polygons from the database.
+ * - Filters sites by associated unitcodes if provided.
+ * - Responds with GeoJSON FeatureCollection for use in Leaflet.
+ *
+ * Environment:
+ * - DATABASE_URL: Connection string for the PostgreSQL database.
+ *
+ * Response: GeoJSON FeatureCollection.
+ * Status: 200 on success, 500 on error.
+ */
 import { NextRequest, NextResponse } from "next/server";
 import { Pool } from "pg";
 import { SitePolyRow } from "@/app/types";
@@ -9,7 +24,11 @@ const pool =
   new Pool({ connectionString: process.env.DATABASE_URL });
 if (!globalForPool.pool) globalForPool.pool = pool;
 
-// Get site polygons and info, format as FeatureCollection for Leaflet
+/**
+ * Handles GET requests for site polygons.
+ * @param {NextRequest} req - Incoming request object.
+ * @returns {Promise<NextResponse>} JSON response with GeoJSON FeatureCollection or error.
+ */
 export async function GET(req: NextRequest) {
   try {
     const unitcodesParam = req.nextUrl.searchParams.get("unitcodes");

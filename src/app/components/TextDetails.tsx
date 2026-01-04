@@ -1,3 +1,21 @@
+/**
+ * TextDetails.tsx
+ *
+ * React component with detailed information about the selected feature.
+ * - Displays visitation, lodging, proximity, and/or score information.
+ * - Supports interactive proxies.
+ *
+ * Props:
+ * - selectedFeature: Currently selected feature.
+ * - siteInfo: Array of site info objects.
+ * - vcInfo: Array of visitor center info objects.
+ * - visitation: Array of visitation data objects.
+ * - score: Score for a selected site.
+ * - competitionProxy: String indicating the active competition proxy.
+ * - demandProxy: String indicating the active demand proxy.
+ * - demandMetric: String indicating the active demand metric.
+ * - proximityProxy: String indicating the active proximity proxy.
+ */
 import {
   FeatureSelection,
   SiteInfoRow,
@@ -5,6 +23,20 @@ import {
   VisitationRow,
 } from "../types";
 
+/**
+ * TextDetails component with details about the selected feature.
+ * @param {Object} props
+ * @param {FeatureSelection|null} props.selectedFeature - Currently selected feature.
+ * @param {SiteInfoRow[]} props.siteInfo - Array of site info objects.
+ * @param {VCInfoRow[]} props.vcInfo - Array of visitor center info objects.
+ * @param {VisitationRow[]} props.visitation - Array of visitation data objects.
+ * @param {number} [props.score] - (Optional) Score for the selected site.
+ * @param {string} [props.competitionProxy] - (Optional) Competition proxy.
+ * @param {string} [props.demandProxy] - (Optional) Demand proxy.
+ * @param {string} [props.demandMetric] - (Optional) Demand metric.
+ * @param {string} [props.proximityProxy] - (Optional) Proximity proxy.
+ * @returns {JSX.Element}
+ */
 export default function TextDetails({
   selectedFeature,
   siteInfo,

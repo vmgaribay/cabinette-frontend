@@ -1,3 +1,19 @@
+/**
+ * FilteredMap.tsx
+ *
+ * React component for filtering and features on an interactive map, also houses ranking table.
+ * - Enables filtering site visibility by park/monument.
+ * - Displays a multi-select dropdown for park selection.
+ * - Renders a table of ranked sites.
+ * - Renders a dynamic map with filtered features.
+ *
+ * Props:
+ * - sitesVisible: Callback to notify parent of currently visible sites.
+ * - selectedFeature: Currently selected feature.
+ * - setSelectedFeature: Callback to update selected feature.
+ * - scoredSites: Array of site information objects with scores.
+ * - visibleSiteIds: Array of currently visible sites.
+ */
 "use client";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import dynamic from "next/dynamic";
@@ -7,19 +23,27 @@ const DynamicMap = dynamic(() => import("./DefaultMap"), { ssr: false });
 
 type Park = { unitcode: string; parkname: string };
 
+/**
+ * FilteredMap component for filtering the default map.
+ * @param {Object} props
+ * @param {(ids: string[]) => void} [props.sitesVisible] - Callback with visible sites.
+ * @param {FeatureSelection|null} props.selectedFeature - Currently selected feature.
+ * @param {(feature: FeatureSelection|null) => void} props.setSelectedFeature - Callback to update selected feature.
+ * @param {Array<SiteInfoRow & {score: number}>} props.scoredSites - Array of site info objects with score prop.
+ * @param {string[]} props.visibleSiteIds - Array of currently visible sites.
+ * @returns {JSX.Element}
+ */
 export default function FilteredMap({
   sitesVisible,
   selectedFeature,
   setSelectedFeature,
   scoredSites,
-  siteInfo,
   visibleSiteIds,
 }: {
   sitesVisible?: (ids: string[]) => void;
   selectedFeature: FeatureSelection | null;
   setSelectedFeature: (feature: FeatureSelection | null) => void;
   scoredSites: (SiteInfoRow & { score: number })[];
-  siteInfo: SiteInfoRow[];
   visibleSiteIds: string[];
 }) {
   const [parks, setParks] = useState<Park[]>([]);
@@ -109,7 +133,6 @@ export default function FilteredMap({
           scoredSites={scoredSites}
           selectedFeature={selectedFeature}
           setSelectedFeature={setSelectedFeature}
-          siteInfo={siteInfo}
           visibleSiteIds={visibleSiteIds}
         />
       </div>

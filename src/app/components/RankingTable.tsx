@@ -1,16 +1,38 @@
+/**
+ * RankingTable.tsx
+ *
+ * React component displaying a ranked table of sites by score.
+ * - Shows site rank, ID, and score.
+ * - Allows selection of a site.
+ * - Highlights the selected site.
+ * - Indicates if the table is filtered by visible parks.
+ *
+ * Props:
+ * - scoredSites: Array of site information objects with scores.
+ * - selectedFeature: Currently selected feature.
+ * - setSelectedFeature: Callback to update selected feature.
+ * - visibleSiteIds: Array of currently visible sites.
+ */
 import { FeatureSelection, SiteInfoRow } from "../types";
 
+/**
+ * RankingTable component displaying a ranked list of sites.
+ * @param {Object} props
+ * @param {Array<SiteInfoRow & {score: number}>} props.scoredSites - Array of site info objects with a score prop.
+ * @param {FeatureSelection|null} props.selectedFeature - Currently selected feature.
+ * @param {(feature: FeatureSelection|null) => void} props.setSelectedFeature - Callback to update selected feature.
+ * @param {string[]} props.visibleSiteIds - Array of currently visible sites.
+ * @returns {JSX.Element}
+ */
 export default function RankingTable({
   scoredSites,
   selectedFeature,
   setSelectedFeature,
-  siteInfo,
   visibleSiteIds,
 }: {
   scoredSites: (SiteInfoRow & { score: number })[];
   selectedFeature: FeatureSelection | null;
   setSelectedFeature: (feature: FeatureSelection | null) => void;
-  siteInfo: SiteInfoRow[];
   visibleSiteIds: string[];
 }) {
   return (
@@ -60,7 +82,7 @@ export default function RankingTable({
       <span style={{ color: "rgb(215, 218, 223)" }}>
         {visibleSiteIds &&
         visibleSiteIds.length > 0 &&
-        visibleSiteIds.length < siteInfo.length
+        visibleSiteIds.length < scoredSites.length
           ? "*Filtered on Visible Parks"
           : "*Overall"}
       </span>

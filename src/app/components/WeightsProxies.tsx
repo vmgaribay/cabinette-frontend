@@ -1,3 +1,29 @@
+/**
+ * WeightsProxies.tsx
+ *
+ * React component for adjusting weights and selecting proxies for scoring.
+ * - Provides sliders for adjusting weights.
+ * - Provides dropdowns for selecting proxies.
+ * - Notifies parent of changes.
+ *
+ * Props:
+ * - demandWeight: Current weight for demand.
+ * - setDemandWeight: Callback to update demand weight.
+ * - competitionWeight: Current weight for competition.
+ * - setCompetitionWeight: Callback to update competition weight.
+ * - proximityWeight: Current weight for proximity.
+ * - setProximityWeight: Callback to update proximity weight.
+ * - accessibilityWeight: Current weight for accessibility.
+ * - setAccessibilityWeight: Callback to update accessibility weight.
+ * - demandProxy: Currently selected demand proxy.
+ * - setDemandProxy: Callback to update demand proxy.
+ * - demandMetric: Currently selected demand metric.
+ * - setDemandMetric: Callback to update demand metric.
+ * - competitionProxy: Currently selected competition proxy.
+ * - setCompetitionProxy: Callback to update competition proxy.
+ * - proximityProxy: Currently selected proximity proxy.
+ * - setProximityProxy: Callback to update proximity proxy.
+ */
 const demandProxies = [
   { label: "Proximate Parks", value: "Proximate Parks" },
   { label: "Nearest Park", value: "Nearest Park" },
@@ -25,6 +51,27 @@ const accessibilityProxies = [
   { label: "Distance to Nearest Road", value: "Distance to Nearest Road" },
 ];
 
+/**
+ * WeightsProxies component for adjusting weights and selecting proxies.
+ * @param {Object} props
+ * @param {number} props.demandWeight - Current weight for demand.
+ * @param {(v: number) => void} props.setDemandWeight - Callback to update demand weight.
+ * @param {number} props.competitionWeight - Current weight for competition.
+ * @param {(v: number) => void} props.setCompetitionWeight - Callback to update competition weight.
+ * @param {number} props.proximityWeight - Current weight for proximity.
+ * @param {(v: number) => void} props.setProximityWeight - Callback to update proximity weight.
+ * @param {number} props.accessibilityWeight - Current weight for accessibility.
+ * @param {(v: number) => void} props.setAccessibilityWeight - Callback to update accessibility weight.
+ * @param {string} props.demandProxy - Currently selected demand proxy.
+ * @param {(v: string) => void} props.setDemandProxy - Callback to update demand proxy.
+ * @param {string} props.demandMetric - Currently selected demand metric.
+ * @param {(v: string) => void} props.setDemandMetric - Callback to update demand metric.
+ * @param {string} props.competitionProxy - Currently selected competition proxy.
+ * @param {(v: string) => void} props.setCompetitionProxy - Callback to update competition proxy.
+ * @param {string} props.proximityProxy - Currently selected proximity proxy.
+ * @param {(v: string) => void} props.setProximityProxy - Callback to update proximity proxy.
+ * @returns {JSX.Element}
+ */
 export default function WeightsProxies({
   demandWeight,
   setDemandWeight,

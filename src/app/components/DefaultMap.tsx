@@ -1,3 +1,19 @@
+/**
+ * DefaultMap.tsx
+ *
+ * React component for interactive Leaflet map.
+ * - Fetches GeoJSON data for sites and visitor centers.
+ * - Displays polygons and points with color-coding based on scores.
+ * - Supports selection and zooming to features.
+ * - Notifies parent of visible site IDs.
+ *
+ * Props:
+ * - unitcodes: Array of unit codes to filter displayed features.
+ * - scoreID: Mapping from site IDs to scores for color-coding.
+ * - sitesVisible: Callback to notify parent of currently visible sites.
+ * - selectedFeature: Currently selected feature.
+ * - setSelectedFeature: Callback to update selected feature.
+ */
 "use client";
 import {
   MapContainer,
@@ -17,6 +33,13 @@ import type {
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { FeatureSelection } from "../types";
 
+/**
+ * Zooms map to fit visible features.
+ * @param {Object} props
+ * @param {FeatureCollection} [props.siteGeojson] - GeoJSON FeatureCollection of sites.
+ * @param {Array.<[number, number]>} [props.vcPoints] - Array of [longitude, latitude] for visitor centers.
+ * @returns {null}
+ */
 function FitVisible({
   siteGeojson,
   vcPoints,
@@ -80,6 +103,14 @@ function FitVisible({
   return null;
 }
 
+/**
+ * Zooms map to selected feature.
+ * @param {Object} props
+ * @param {FeatureSelection|null} [props.selectedFeature] - Selected feature object.
+ * @param {FeatureCollection} [props.sitesGeojson] - GeoJSON FeatureCollection of sites.
+ * @param {FeatureCollection<Point>} [props.vcsGeojson] - GeoJSON FeatureCollection of visitor centers.
+ * @returns {null}
+ */
 function ZoomToSelection({
   selectedFeature,
   sitesGeojson,
@@ -140,7 +171,16 @@ function ZoomToSelection({
 
   return null;
 }
-
+/**
+ * Map component displaying sites and visitor centers.
+ * @param {Object} props
+ * @param {string[]} [props.unitcodes] - Array of unit codes, used to filter features.
+ * @param {Object.<string, number>} props.scoreID - Mapping from site IDs to scores.
+ * @param {(ids: string[]) => void} [props.sitesVisible] - Callback with visible site IDs.
+ * @param {FeatureSelection|null} [props.selectedFeature] - Currently selected feature.
+ * @param {(feature: FeatureSelection|null) => void} [props.setSelectedFeature] - Callback to update selected feature.
+ * @returns {JSX.Element}
+ */
 export default function Map({
   unitcodes,
   sitesVisible,
