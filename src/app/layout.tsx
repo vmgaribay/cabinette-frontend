@@ -1,4 +1,12 @@
+/**
+ * layout.tsx
+ *
+ * Layout for the Cabinette application.
+ * - Sets up global metadata/styles/page structure.
+ * - Wraps all pages with Redux provider and shared header/navigation.
+ */
 import type { Metadata } from "next";
+import ClientProvider from "./store/provider";
 import "./globals.css";
 import "./style.css";
 import "leaflet/dist/leaflet.css";
@@ -47,8 +55,9 @@ export default function RootLayout({
             </ul>
           </nav>
         </header>
-
-        {children}
+        <ClientProvider>
+          {children}
+        </ClientProvider>
       </body>
     </html>
   );

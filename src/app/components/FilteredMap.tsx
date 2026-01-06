@@ -140,14 +140,14 @@ export default function FilteredMap({
       <div
         style={{ flex: 1, height: 600, borderRadius: 16, overflow: "hidden" }}
       >
-        <DynamicMap
+        {<DynamicMap
           key={unitcodesKey}
           unitcodes={mapUnitcodes}
           scoreID={scoreID}
           sitesVisible={sitesVisible}
           selectedFeature={selectedFeature}
           setSelectedFeature={setSelectedFeature}
-        />
+        />}
       </div>
     </div>
   );

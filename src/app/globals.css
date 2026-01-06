@@ -97,7 +97,7 @@
   background: rgba(var(--dark), 0.92);
   color: rgb(var(--light));
   border: 1.5px solid rgba(var(--accent), 0.35);
-  border-radius: 18px;
+  border-radius: 12px;
   box-shadow: 0 4px 16px rgba(var(--dark), 0.35);
   font-family: "Lucida Sans", "Perpetua", serif;
 }

@@ -9,11 +9,13 @@
  */
 "use client";
 import { useEffect, useState, useCallback, useMemo } from "react";
+import { useDispatch } from "react-redux";
 import WeightsProxies from "./components/WeightsProxies";
 import FilteredMap from "./components/FilteredMap";
 import TextDetails from "./components/TextDetails";
 import VCVisitationPlot from "./components/VCPlot";
 import SiteGauges from "./components/SiteGauges";
+import {setBookmarks} from "./store/bookmarksSlice";
 import {
   FeatureSelection,
   SiteInfoRow,
@@ -22,6 +24,12 @@ import {
 } from "./types";
 
 export default function Home() {
+  const [isHydrated, setIsHydrated] = useState(false);
+  
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
   const [siteInfo, setSiteInfo] = useState<SiteInfoRow[]>([]);
   const [vcInfo, setVCInfo] = useState<VCInfoRow[]>([]);
   const [visitation, setVisitation] = useState<VisitationRow[]>([]);
@@ -58,6 +66,7 @@ export default function Home() {
       .then((res) => res.json())
       .then((data) => setVisitation(Array.isArray(data) ? data : []));
   }, []);
+
 
   const getDemandCol = useCallback(
     (site: SiteInfoRow) => {
@@ -238,7 +247,7 @@ export default function Home() {
           />
         </div>
         <div style={{ width: "80vw", maxWidth: 1200 }}>
-          <TextDetails
+          {<TextDetails
             selectedFeature={selectedFeature}
             siteInfo={siteInfo}
             vcInfo={vcInfo}
@@ -248,7 +257,7 @@ export default function Home() {
             demandProxy={demandProxy}
             demandMetric={demandMetric}
             proximityProxy={proximityProxy}
-          />
+          />}
         </div>
         <div
           className="plot-card"
