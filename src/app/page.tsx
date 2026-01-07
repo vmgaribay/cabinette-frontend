@@ -6,16 +6,16 @@
  * - Allows users to rank candidate cabin sites.
  * - Integrates map, ranking, weights/proxies controls, and info/plots.
  * - Handles user selection and dynamic scoring of sites.
+ * - Allows theme toggling between light and default modes.
  */
 "use client";
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
+import ThemeToggle from "./components/ThemeToggle";
 import WeightsProxies from "./components/WeightsProxies";
 import FilteredMap from "./components/FilteredMap";
 import TextDetails from "./components/TextDetails";
 import VCVisitationPlot from "./components/VCPlot";
 import SiteGauges from "./components/SiteGauges";
-import {setBookmarks} from "./store/bookmarksSlice";
 import {
   FeatureSelection,
   SiteInfoRow,
@@ -24,11 +24,7 @@ import {
 } from "./types";
 
 export default function Home() {
-  const [isHydrated, setIsHydrated] = useState(false);
-  
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
+  const themeRef = useRef<HTMLDivElement>(null);
 
   const [siteInfo, setSiteInfo] = useState<SiteInfoRow[]>([]);
   const [vcInfo, setVCInfo] = useState<VCInfoRow[]>([]);
@@ -66,7 +62,6 @@ export default function Home() {
       .then((res) => res.json())
       .then((data) => setVisitation(Array.isArray(data) ? data : []));
   }, []);
-
 
   const getDemandCol = useCallback(
     (site: SiteInfoRow) => {
@@ -162,128 +157,136 @@ export default function Home() {
     }
     return undefined;
   }, [selectedFeature, siteInfo, computeScore]);
-
   return (
-    <main
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <h1
+    <>
+      {<ThemeToggle />}
+      <main
         style={{
-          textAlign: "center",
-          fontSize: "2.5rem",
-          marginTop: "2rem",
-          marginBottom: "0.5rem",
-          color: "rgb(143, 178, 248)",
-          textShadow: "0 2px 8px rgba(143,178,248,0.25)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        Cabinette Map
-      </h1>
-      <p
-        style={{
-          textAlign: "center",
-          color: "rgb(215, 218, 223)",
-          fontSize: "1.15rem",
-          marginBottom: "1.5rem",
-        }}
-      >
-        Explore and rank candidate cabin sites near U.S. National Parks &
-        Monuments
-      </p>
-      <hr
-        style={{
-          border: "none",
-          borderTop: "2px solid rgb(143, 178, 248)",
-          width: "60%",
-          margin: "0 auto 1.5rem auto",
-        }}
-      />
-      <div
-        style={{
-          background:
-            "linear-gradient(135deg, rgba(24,20,27,0.92) 60%, rgba(143,178,248,0.10) 100%)",
-          borderRadius: "24px",
-          boxShadow: "0 8px 32px 0 rgba(31,38,135,0.25)",
-          border: "1.5px solid rgba(143,178,248,0.18)",
-          padding: "2rem 2rem 2rem 2rem",
-          width: "80vw",
-          maxWidth: "1280px",
-          margin: "3rem auto",
-          backdropFilter: "blur(2px)",
-        }}
-      >
-        <div style={{ width: "100%", maxWidth: "80vw", height: 600 }}>
-          <FilteredMap
-            sitesVisible={setVisibleSiteIds}
-            selectedFeature={selectedFeature}
-            setSelectedFeature={setSelectedFeature}
-            scoredSites={filteredScoredSites}
-            visibleSiteIds={visibleSiteIds}
-          />
-        </div>
-        <div style={{ width: "80vw", maxWidth: 1200, marginTop: 32 }}>
-          <WeightsProxies
-            demandWeight={demandWeight}
-            setDemandWeight={setDemandWeight}
-            competitionWeight={competitionWeight}
-            setCompetitionWeight={setCompetitionWeight}
-            proximityWeight={proximityWeight}
-            setProximityWeight={setProximityWeight}
-            accessibilityWeight={accessibilityWeight}
-            setAccessibilityWeight={setAccessibilityWeight}
-            demandProxy={demandProxy}
-            setDemandProxy={setDemandProxy}
-            demandMetric={demandMetric}
-            setDemandMetric={setDemandMetric}
-            competitionProxy={competitionProxy}
-            setCompetitionProxy={setCompetitionProxy}
-            proximityProxy={proximityProxy}
-            setProximityProxy={setProximityProxy}
-          />
-        </div>
-        <div style={{ width: "80vw", maxWidth: 1200 }}>
-          {<TextDetails
-            selectedFeature={selectedFeature}
-            siteInfo={siteInfo}
-            vcInfo={vcInfo}
-            visitation={visitation}
-            score={selectedSiteScore}
-            competitionProxy={competitionProxy}
-            demandProxy={demandProxy}
-            demandMetric={demandMetric}
-            proximityProxy={proximityProxy}
-          />}
-        </div>
-        <div
-          className="plot-card"
-          style={{ width: "80vw", maxWidth: 1200, height: 350 }}
+        <h1
+          style={{
+            textAlign: "center",
+            fontSize: "2.5rem",
+            marginTop: "2rem",
+            marginBottom: "0.5rem",
+            color: "rgb(var(--accent))",
+            textShadow: "0 2px 8px rgba(var(--accent), 0.25)",
+          }}
         >
-          <h2>
-            {selectedFeature?.type === "vc" &&
-              `Monthly Visitation for ${visitation.find((p) => p.unitcode === selectedFeature.id.toString().split("_")[0])?.parkname}`}
-            {selectedFeature?.type === "site" &&
-              `Candidate Site ${selectedFeature.id} Monthly Visitation for ${demandProxy}`}
-          </h2>
-          {selectedFeature?.type === "vc" && (
-            <VCVisitationPlot
-              visitation={visitation}
-              unitcode={selectedFeature.id.toString().split("_")[0]}
+          Cabinette Map
+        </h1>
+        <p
+          style={{
+            textAlign: "center",
+            color: "rgb(215, 218, 223)",
+            fontSize: "1.15rem",
+            marginBottom: "1.5rem",
+          }}
+        >
+          Explore and rank candidate cabin sites near U.S. National Parks &
+          Monuments
+        </p>
+        <hr
+          style={{
+            border: "none",
+            borderTop: "2px solid rgb(var(--accent))",
+            width: "60%",
+            margin: "0 auto 1.5rem auto",
+          }}
+        />
+        <div
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(var(--dark),0.92) 60%, rgba(var(--accent),0.10) 100%)",
+            borderRadius: "24px",
+            boxShadow: "0 8px 32px 0 rgba(31,38,135,0.25)",
+            border: "1.5px solid rgba(var(--accent),0.18)",
+            padding: "2rem 2rem 2rem 2rem",
+            width: "80vw",
+            maxWidth: "1280px",
+            margin: "3rem auto",
+            backdropFilter: "blur(2px)",
+          }}
+        >
+          <div style={{ width: "100%", maxWidth: "80vw", height: 600 }}>
+            <FilteredMap
+              sitesVisible={setVisibleSiteIds}
+              selectedFeature={selectedFeature}
+              setSelectedFeature={setSelectedFeature}
+              scoredSites={filteredScoredSites}
+              visibleSiteIds={visibleSiteIds}
+              themeRef={themeRef}
             />
-          )}
-          {selectedFeature?.type === "site" && (
-            <SiteGauges
-              siteRow={siteInfo.find((s) => s.id === selectedFeature.id)}
-              siteInfo={siteInfo}
+          </div>
+          <div style={{ width: "80vw", maxWidth: 1200, marginTop: 32 }}>
+            <WeightsProxies
+              demandWeight={demandWeight}
+              setDemandWeight={setDemandWeight}
+              competitionWeight={competitionWeight}
+              setCompetitionWeight={setCompetitionWeight}
+              proximityWeight={proximityWeight}
+              setProximityWeight={setProximityWeight}
+              accessibilityWeight={accessibilityWeight}
+              setAccessibilityWeight={setAccessibilityWeight}
               demandProxy={demandProxy}
+              setDemandProxy={setDemandProxy}
+              demandMetric={demandMetric}
+              setDemandMetric={setDemandMetric}
+              competitionProxy={competitionProxy}
+              setCompetitionProxy={setCompetitionProxy}
+              proximityProxy={proximityProxy}
+              setProximityProxy={setProximityProxy}
             />
-          )}
+          </div>
+          <div style={{ width: "80vw", maxWidth: 1200 }}>
+            {
+              <TextDetails
+                selectedFeature={selectedFeature}
+                siteInfo={siteInfo}
+                vcInfo={vcInfo}
+                visitation={visitation}
+                score={selectedSiteScore}
+                competitionProxy={competitionProxy}
+                demandProxy={demandProxy}
+                demandMetric={demandMetric}
+                proximityProxy={proximityProxy}
+              />
+            }
+          </div>
+          <div
+            ref={themeRef}
+            className="plot-card"
+            style={{ width: "80vw", maxWidth: 1200, height: 350 }}
+          >
+            <h2>
+              {selectedFeature?.type === "vc" &&
+                `Monthly Visitation for ${visitation.find((p) => p.unitcode === selectedFeature.id.toString().split("_")[0])?.parkname}`}
+              {selectedFeature?.type === "site" &&
+                `Candidate Site ${selectedFeature.id} Monthly Visitation for ${demandProxy}`}
+            </h2>
+            {selectedFeature?.type === "vc" && (
+              <VCVisitationPlot
+                visitation={visitation}
+                unitcode={selectedFeature.id.toString().split("_")[0]}
+                themeRef={themeRef}
+              />
+            )}
+            {selectedFeature?.type === "site" && (
+              <SiteGauges
+                siteRow={siteInfo.find((s) => s.id === selectedFeature.id)}
+                siteInfo={siteInfo}
+                demandProxy={demandProxy}
+                themeRef={themeRef}
+              />
+            )}
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }

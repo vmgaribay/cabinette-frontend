@@ -1,7 +1,18 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import FilteredMap from "../FilteredMap";
+import { Provider } from "react-redux";
+import configureStore from "redux-mock-store";
+import { createRef } from "react";
+
+const mockStore = configureStore([]);
+const store = mockStore({
+  bookmarks: { siteIds: [] },
+  theme: { mode: "default" },
+});
 
 jest.mock("../DefaultMap", () => () => <div data-testid="dynamic-map" />);
+
+const themeRef = createRef<HTMLDivElement>();
 
 const parksMock = [
   { unitcode: "JOTR", parkname: "Joshua Tree NP" },
@@ -22,13 +33,16 @@ afterEach(() => {
 
 test("filter labels render", async () => {
   render(
+    <Provider store={store}>
     <FilteredMap
       selectedFeature={null}
       setSelectedFeature={() => {}}
       scoredSites={[]}
       siteInfo={[]}
       visibleSiteIds={[]}
-    />,
+      themeRef={themeRef}
+    />
+    </Provider>
   );
   expect(
     screen.getByText(/filter site visibility by park/i),
@@ -40,13 +54,16 @@ test("filter labels render", async () => {
 
 test("selection value updates", async () => {
   render(
+    <Provider store={store}>
     <FilteredMap
       selectedFeature={null}
       setSelectedFeature={() => {}}
       scoredSites={[]}
       siteInfo={[]}
       visibleSiteIds={[]}
-    />,
+      themeRef={themeRef}
+    />
+    </Provider>
   );
   await waitFor(() =>
     expect(screen.getByText("Joshua Tree NP")).toBeInTheDocument(),
@@ -64,13 +81,16 @@ test("selection value updates", async () => {
 
 test("button clears selection", async () => {
   render(
+    <Provider store={store}>
     <FilteredMap
       selectedFeature={null}
       setSelectedFeature={() => {}}
       scoredSites={[]}
       siteInfo={[]}
       visibleSiteIds={[]}
-    />,
+      themeRef={themeRef}
+    />
+    </Provider>
   );
   await waitFor(() =>
     expect(screen.getByText("Joshua Tree NP")).toBeInTheDocument(),

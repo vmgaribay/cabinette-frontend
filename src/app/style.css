@@ -5,7 +5,12 @@
   --xlight: 215, 218, 223;
   --accent: 143, 178, 248;
 }
-
+.light-theme {
+  --dark: 245, 245, 250;
+  --light: 60, 80, 120;
+  --xlight: 24, 20, 27;
+  --accent: 143, 178, 248;
+}
 body {
   margin: 0;
   padding: 2rem;

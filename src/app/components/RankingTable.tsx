@@ -38,9 +38,9 @@ export default function RankingTable({
   setSelectedFeature: (feature: FeatureSelection | null) => void;
   visibleSiteIds: string[];
 }) {
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const bookmarkedSiteIds = useSelector(
-    (state: RootState) => state.bookmarks.siteIds
+    (state: RootState) => state.bookmarks.siteIds,
   );
   return (
     <div>
@@ -49,19 +49,23 @@ export default function RankingTable({
       <table className="ranking-table">
         <thead>
           <tr>
-                <th className="table-header" title="Bookmark" style={{ width: "16px", textAlign: "center" }}>
-      <svg
-        width="10"
-        height="20"
-        viewBox="0 0 20 24"
-        fill="none"
-        stroke="rgba(var(--xlight))"
-        strokeWidth="4"
-        style={{ verticalAlign: "middle" }}
-      >
-        <path d="M3 2h14a1 1 0 0 1 1 1v19l-8-5-8 5V3a1 1 0 0 1 1-1z" />
-      </svg>
-    </th>
+            <th
+              className="table-header"
+              title="Bookmark"
+              style={{ width: "16px", textAlign: "center" }}
+            >
+              <svg
+                width="10"
+                height="20"
+                viewBox="0 0 20 24"
+                fill="none"
+                stroke="rgba(var(--xlight))"
+                strokeWidth="4"
+                style={{ verticalAlign: "middle" }}
+              >
+                <path d="M3 2h14a1 1 0 0 1 1 1v19l-8-5-8 5V3a1 1 0 0 1 1-1z" />
+              </svg>
+            </th>
             <th className="table-header">Rank*</th>
             <th className="table-header">Site ID</th>
             <th className="table-header">Score</th>
@@ -76,40 +80,42 @@ export default function RankingTable({
                 background:
                   selectedFeature?.type === "site" &&
                   selectedFeature.id === site.id
-                    ? "rgba(215, 218, 223, 0.4)"
+                    ? "rgba(var(--xlight), 0.4)"
                     : undefined,
               }}
               onMouseEnter={(e) =>
-                (e.currentTarget.style.background = "rgba(143,178,248,0.08)")
+                (e.currentTarget.style.background = "rgba(var(--accent), 0.08)")
               }
               onMouseLeave={(e) =>
                 (e.currentTarget.style.background =
                   selectedFeature?.type === "site" &&
                   selectedFeature.id === site.id
-                    ? "rgba(215, 218, 223, 0.12)"
+                    ? "rgba(var(--xlight), 0.12)"
                     : "transparent")
               }
               onClick={() => setSelectedFeature({ type: "site", id: site.id })}
             >
-<td className="table-cell" style={{ textAlign: "center" }}>
-        <input
-          type="checkbox"
-          checked={bookmarkedSiteIds.includes(site.id.toString())}
-          onChange={() => dispatch(toggleBookmark(site.id.toString()))}
-          style={{
-            opacity: bookmarkedSiteIds.includes(site.id.toString()) ? 0.9 : 0.3,
-            accentColor: "rgba(var(--light))",
-            cursor: "pointer",
-            width: "14px",
-            height: "14px",
-          }}
-          title={
-            bookmarkedSiteIds.includes(site.id.toString())
-              ? "Remove Bookmark"
-              : "Add Bookmark"
-          }
-        />
-</td>
+              <td className="table-cell" style={{ textAlign: "center" }}>
+                <input
+                  type="checkbox"
+                  checked={bookmarkedSiteIds.includes(site.id.toString())}
+                  onChange={() => dispatch(toggleBookmark(site.id.toString()))}
+                  style={{
+                    opacity: bookmarkedSiteIds.includes(site.id.toString())
+                      ? 0.9
+                      : 0.3,
+                    accentColor: "rgba(var(--light))",
+                    cursor: "pointer",
+                    width: "14px",
+                    height: "14px",
+                  }}
+                  title={
+                    bookmarkedSiteIds.includes(site.id.toString())
+                      ? "Remove Bookmark"
+                      : "Add Bookmark"
+                  }
+                />
+              </td>
               <td className="table-cell">{idx + 1}</td>
               <td className="table-cell">{site.id}</td>
               <td className="table-cell">{site.score.toFixed(3)}</td>
@@ -118,7 +124,7 @@ export default function RankingTable({
         </tbody>
       </table>
 
-      <span style={{ color: "rgb(215, 218, 223)" }}>
+      <span style={{ color: "rgb(var(--xlight))" }}>
         {visibleSiteIds &&
         visibleSiteIds.length > 0 &&
         visibleSiteIds.length < scoredSites.length

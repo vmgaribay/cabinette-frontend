@@ -15,6 +15,17 @@ jest.mock("react-plotly.js", () => (props: any) => (
     </div>
   </div>
 ));
+import { Provider } from "react-redux";
+import configureStore from "redux-mock-store";
+import { createRef } from "react";
+
+const mockStore = configureStore([]);
+const store = mockStore({
+  bookmarks: { siteIds: [] },
+  theme: { mode: "default" },
+});
+
+const themeRef = createRef<HTMLDivElement>();
 
 const mockVisitation = [
   {
@@ -112,12 +123,20 @@ const mockVisitation = [
 
 describe("VCVisitationPlot", () => {
   it("plot renders", () => {
-    render(<VCVisitationPlot visitation={mockVisitation} unitcode="JOTR" />);
+    render(
+      <Provider store={store}>
+        <VCVisitationPlot visitation={mockVisitation} unitcode="JOTR" themeRef={themeRef} />
+      </Provider>
+    );
     expect(screen.getByText("Feb")).toBeInTheDocument();
   });
 
   it("data is filtered", () => {
-    render(<VCVisitationPlot visitation={mockVisitation} unitcode="REDW" />);
+    render(
+      <Provider store={store}>
+        <VCVisitationPlot visitation={mockVisitation} unitcode="REDW" themeRef={themeRef} />
+      </Provider>
+    );
     expect(screen.queryByText(/Feb/)).not.toBeInTheDocument();
     expect(screen.getByText(/Minimum, Average, Maximum/)).toBeInTheDocument();
   });

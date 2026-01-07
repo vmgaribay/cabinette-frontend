@@ -1,5 +1,8 @@
 import { render, screen, waitFor, act } from "@testing-library/react";
-// (Tests for components found in app/components/__tests__/)
+import { Provider } from "react-redux";
+import configureStore from "redux-mock-store";
+
+// (Tests for components can be found in app/components/__tests__/)
 const mockFilteredMap = jest.fn(() => <div data-testid="filtered-map" />);
 const mockWeightsProxies = jest.fn(() => <div data-testid="weights-proxies" />);
 jest.doMock("./components/FilteredMap", () => ({
@@ -22,6 +25,11 @@ jest.mock("./components/SiteGauges", () => ({
   __esModule: true,
   default: () => <div data-testid="site-gauges" />,
 }));
+const mockStore = configureStore([]);
+const store = mockStore({
+  bookmarks: { siteIds: [] },
+  theme: { mode: "default" },
+});
 
 import Home from "./page";
 
@@ -37,7 +45,11 @@ describe("Main Page", () => {
   });
 
   it("renders heading and components", async () => {
-    render(<Home />);
+    render(
+      <Provider store={store}>
+        <Home />
+      </Provider>
+    );
     expect(screen.getByText("Cabinette Map")).toBeInTheDocument();
     await waitFor(() => {
       expect(screen.getByTestId("filtered-map")).toBeInTheDocument();
@@ -47,7 +59,11 @@ describe("Main Page", () => {
   });
 
   it("fetches data on mount", async () => {
-    render(<Home />);
+    render(
+      <Provider store={store}>
+        <Home />
+      </Provider>
+    );
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith("/api/details/site_info");
       expect(global.fetch).toHaveBeenCalledWith("/api/details/vc_info");
@@ -107,25 +123,38 @@ describe("Main Page", () => {
       .mockResolvedValueOnce({ json: async () => [] })
       .mockResolvedValueOnce({ json: async () => [] });
 
-    render(<Home />);
+    render(
+      <Provider store={store}>
+        <Home />
+      </Provider>
+    );
+await waitFor(() => {
+  const filteredMapCalls = mockFilteredMap.mock.calls;
+  const initialCall = filteredMapCalls.find(
+    ([props]) => props.scoredSites && props.scoredSites.length === 3
+  );
+  expect(initialCall).toBeDefined();
+  const initialProps = initialCall[0];
+  expect(initialProps.scoredSites).toHaveLength(3);
+  expect(initialProps.scoredSites[0].id).toBe("c");
+  expect(initialProps.scoredSites[1].id).toBe("b");
+  expect(initialProps.scoredSites[2].id).toBe("a");
 
-    await waitFor(() => expect(mockFilteredMap).toHaveBeenCalledTimes(2));
-    const initialProps = mockFilteredMap.mock.calls[1][0];
-    expect(initialProps.scoredSites).toHaveLength(3);
-    expect(initialProps.scoredSites[0].id).toBe("c");
-    expect(initialProps.scoredSites[1].id).toBe("b");
-    expect(initialProps.scoredSites[2].id).toBe("a");
+
 
     const sitesVisibleCallback = initialProps.sitesVisible;
     act(() => sitesVisibleCallback(["a", "c"]));
 
-    await waitFor(() => {
-      expect(mockFilteredMap).toHaveBeenCalledTimes(3);
-    });
 
-    const filteredProps = mockFilteredMap.mock.calls[2][0];
-    expect(filteredProps.scoredSites).toHaveLength(2);
-    expect(filteredProps.scoredSites[0].id).toBe("c");
-    expect(filteredProps.scoredSites[1].id).toBe("a");
+const filteredCall = filteredMapCalls.find(
+  ([props]) =>
+    props.scoredSites &&
+    props.scoredSites.length === 2 &&
+    props.scoredSites[0].id === "c" &&
+    props.scoredSites[1].id === "a"
+);
+expect(filteredCall).toBeDefined();
+});
+
   });
 });
