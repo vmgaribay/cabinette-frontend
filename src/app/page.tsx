@@ -16,6 +16,8 @@ import FilteredMap from "./components/FilteredMap";
 import TextDetails from "./components/TextDetails";
 import VCVisitationPlot from "./components/VCPlot";
 import SiteGauges from "./components/SiteGauges";
+import { useSelector } from "react-redux";
+import type { RootState } from "./store/store";
 import {
   FeatureSelection,
   SiteInfoRow,
@@ -29,7 +31,6 @@ export default function Home() {
   const [siteInfo, setSiteInfo] = useState<SiteInfoRow[]>([]);
   const [vcInfo, setVCInfo] = useState<VCInfoRow[]>([]);
   const [visitation, setVisitation] = useState<VisitationRow[]>([]);
-  const [visibleSiteIds, setVisibleSiteIds] = useState<string[]>([]);
   const [selectedFeature, setSelectedFeature] =
     useState<FeatureSelection | null>(null);
 
@@ -142,13 +143,6 @@ export default function Home() {
     () => siteInfo.map((site) => ({ ...site, score: computeScore(site) })),
     [siteInfo, computeScore],
   );
-  const filteredScoredSites = useMemo(() => {
-    const filtered =
-      visibleSiteIds && visibleSiteIds.length > 0
-        ? scoredSites.filter((site) => visibleSiteIds.includes(site.id))
-        : scoredSites;
-    return filtered.sort((a, b) => b.score - a.score).slice(0, 10);
-  }, [scoredSites, visibleSiteIds]);
 
   const selectedSiteScore = useMemo(() => {
     if (selectedFeature?.type === "site") {
@@ -215,11 +209,9 @@ export default function Home() {
         >
           <div style={{ width: "100%", maxWidth: "80vw", height: 600 }}>
             <FilteredMap
-              sitesVisible={setVisibleSiteIds}
+              scoredSites={scoredSites}
               selectedFeature={selectedFeature}
               setSelectedFeature={setSelectedFeature}
-              scoredSites={filteredScoredSites}
-              visibleSiteIds={visibleSiteIds}
               themeRef={themeRef}
             />
           </div>

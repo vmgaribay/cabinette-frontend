@@ -17,11 +17,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import bookmarksReducer from "./bookmarksSlice";
 import themeReducer from "./themeSlice";
+import filterReducer from "./filterSlice";
 
 export const store = configureStore({
   reducer: {
     bookmarks: bookmarksReducer,
     theme: themeReducer,
+    filter: filterReducer,
   },
 });
 

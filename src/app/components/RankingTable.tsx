@@ -11,12 +11,15 @@
  * - scoredSites: Array of site information objects with scores.
  * - selectedFeature: Currently selected feature.
  * - setSelectedFeature: Callback to update selected feature.
- * - visibleSiteIds: Array of currently visible sites.
  */
 import { FeatureSelection, SiteInfoRow } from "../types";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleBookmark } from "../store/bookmarksSlice";
+import { useMemo } from "react";
 import type { RootState } from "../store/store";
+import { selectVisibleSiteIDs } from "../store/selector";
+import { HiArrowDownTray,HiArrowUpTray,HiOutlineBookmark } from "react-icons/hi2";
+
 
 /**
  * RankingTable component displaying a ranked list of sites.
@@ -24,24 +27,30 @@ import type { RootState } from "../store/store";
  * @param {Array<SiteInfoRow & {score: number}>} props.scoredSites - Array of site info objects with a score prop.
  * @param {FeatureSelection|null} props.selectedFeature - Currently selected feature.
  * @param {(feature: FeatureSelection|null) => void} props.setSelectedFeature - Callback to update selected feature.
- * @param {string[]} props.visibleSiteIds - Array of currently visible sites.
  * @returns {JSX.Element}
  */
 export default function RankingTable({
   scoredSites,
   selectedFeature,
   setSelectedFeature,
-  visibleSiteIds,
 }: {
   scoredSites: (SiteInfoRow & { score: number })[];
   selectedFeature: FeatureSelection | null;
   setSelectedFeature: (feature: FeatureSelection | null) => void;
-  visibleSiteIds: string[];
 }) {
   const dispatch = useDispatch();
-  const bookmarkedSiteIds = useSelector(
-    (state: RootState) => state.bookmarks.siteIds,
-  );
+  const bookmarkedSiteIds = useSelector((state: RootState) => state.bookmarks.siteIds);
+  const visibleSiteIDs = useSelector(selectVisibleSiteIDs);
+  const showBookmarkedOnly = useSelector((state: RootState) => state.filter.showBookmarkedOnly);
+
+  const visibleScoredSites = useMemo(() => {
+      const filtered =
+        visibleSiteIDs && visibleSiteIDs.length > 0
+          ? scoredSites.filter((site) => visibleSiteIDs.includes(site.id))
+          : scoredSites;
+      return filtered.sort((a, b) => b.score - a.score).slice(0, 10);
+    }, [scoredSites, visibleSiteIDs]);
+
   return (
     <div>
       <h2 style={{ textAlign: "center" }}>Top Sites by Score</h2>
@@ -72,7 +81,21 @@ export default function RankingTable({
           </tr>
         </thead>
         <tbody>
-          {scoredSites.map((site, idx) => (
+          {bookmarkedSiteIds.length == 0 && showBookmarkedOnly ? (
+    <tr>
+      <td colSpan={4} style={{ textAlign: "center", color: "var(--accent)" }}>
+       No known bookmarks. Click the bookmark icon next to sites or upload bookmarks with the <HiArrowDownTray />/<HiArrowUpTray /> <HiOutlineBookmark /> Utilities button above.
+      </td>
+    </tr>
+  ) :
+            visibleSiteIDs.length == 0 && showBookmarkedOnly ? (
+    
+    <tr>
+      <td colSpan={4} style={{ textAlign: "center", color: "var(--accent)" }}>
+       No bookmarked sites match the current filter.
+      </td>
+    </tr>
+  ) : (visibleScoredSites.map((site, idx) => (
             <tr
               key={site.id}
               className="table-row"
@@ -120,14 +143,15 @@ export default function RankingTable({
               <td className="table-cell">{site.id}</td>
               <td className="table-cell">{site.score.toFixed(3)}</td>
             </tr>
-          ))}
+          ))
+        )}
         </tbody>
       </table>
 
       <span style={{ color: "rgb(var(--xlight))" }}>
-        {visibleSiteIds &&
-        visibleSiteIds.length > 0 &&
-        visibleSiteIds.length < scoredSites.length
+        {visibleSiteIDs &&
+        visibleSiteIDs.length > 0 &&
+        visibleSiteIDs.length < scoredSites.length
           ? "*Filtered on Visible Parks"
           : "*Overall"}
       </span>
