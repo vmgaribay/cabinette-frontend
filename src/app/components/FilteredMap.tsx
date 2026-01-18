@@ -13,7 +13,7 @@
  * - scoredSites: Array of site information objects with scores.
  */
 "use client";
-import { useEffect, useState, useCallback, useMemo, use } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import dynamic from "next/dynamic";
 import RankingTable from "./RankingTable";
 import BookmarksFilter from "./BookmarksFilter";
@@ -50,7 +50,9 @@ export default function FilteredMap({
   themeRef: React.RefObject<HTMLDivElement | null>;
 }) {
   const [parks, setParks] = useState<Park[]>([]);
-  const filterUnitcodes = useSelector((state: RootState) => state.filter.filterUnitcodes);
+  const filterUnitcodes = useSelector(
+    (state: RootState) => state.filter.filterUnitcodes,
+  );
 
   const scoreID = useMemo(() => {
     const map: Record<string, number> = {};
@@ -69,18 +71,22 @@ export default function FilteredMap({
   const dispatch = useDispatch();
 
   useEffect(() => {
-  dispatch(setUnitcodeFilteredSiteIDs(
-    scoredSites
-      .filter(site => {
-        if (filterUnitcodes.length === 0) return true;
-        const siteUnitcodes = site.parks_within_30_mi_unitcodes
-          ? site.parks_within_30_mi_unitcodes.split(",").map(s => s.trim())
-          : [];
-        return filterUnitcodes.some(code => siteUnitcodes.includes(code));
-      })
-      .map(site => site.id)
-  ));
-}, [filterUnitcodes, scoredSites, dispatch]);
+    dispatch(
+      setUnitcodeFilteredSiteIDs(
+        scoredSites
+          .filter((site) => {
+            if (filterUnitcodes.length === 0) return true;
+            const siteUnitcodes = site.parks_within_30_mi_unitcodes
+              ? site.parks_within_30_mi_unitcodes
+                  .split(",")
+                  .map((s) => s.trim())
+              : [];
+            return filterUnitcodes.some((code) => siteUnitcodes.includes(code));
+          })
+          .map((site) => site.id),
+      ),
+    );
+  }, [filterUnitcodes, scoredSites, dispatch]);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -88,9 +94,9 @@ export default function FilteredMap({
         (opt) => opt.value,
       );
       dispatch(setFilterUnitcodes(selectedOptions));
-    }
-  , [dispatch]);
-
+    },
+    [dispatch],
+  );
 
   const currentTheme = useSelector((state: RootState) => state.theme.mode);
 
@@ -112,18 +118,13 @@ export default function FilteredMap({
     }
   }, [currentTheme, themeRef]);
 
-
-
   return (
     <div style={{ display: "flex", gap: 12 }}>
       <div style={{ width: 330 }}>
-       
         <label className="multi-select-header" style={{ marginTop: 0 }}>
           Filter Site Visibility:
         </label>
-        <BookmarksFilter
-          themeRef={themeRef}
-        />
+        <BookmarksFilter themeRef={themeRef} />
         <select
           multiple
           value={filterUnitcodes}
@@ -192,5 +193,3 @@ export default function FilteredMap({
     </div>
   );
 }
-
-

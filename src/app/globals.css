@@ -177,24 +177,27 @@
 }
 
 @keyframes fade-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 .popup {
-   position: fixed;
-    top: 0;
-    left: 30;
-    width: 234;
-    background: rgb(var(--light));
-    color: rgb(var(--dark));
-    padding: 21px 50px;
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(var(--dark),0.2);
-    z-index: 1000;
-    font-size: 14px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    opacity: 1;
-    animation: fade-out 1s ease 5s forwards;
-
+  position: fixed;
+  top: 0;
+  left: 30;
+  width: 234;
+  background: rgb(var(--light));
+  color: rgb(var(--dark));
+  padding: 21px 50px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(var(--dark), 0.2);
+  z-index: 1000;
+  font-size: 14px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  opacity: 1;
+  animation: fade-out 1s ease 5s forwards;
 }

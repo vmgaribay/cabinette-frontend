@@ -24,8 +24,10 @@ export const selectVisibleSiteIDs = createSelector(
   ],
   (unitcodeFilteredSiteIDs, showBookmarkedOnly, bookmarkedIDs) => {
     if (showBookmarkedOnly) {
-      return unitcodeFilteredSiteIDs.filter((id: string) => bookmarkedIDs.includes(id));
+      return unitcodeFilteredSiteIDs.filter((id: string) =>
+        bookmarkedIDs.includes(id),
+      );
     }
     return unitcodeFilteredSiteIDs;
-  }
+  },
 );

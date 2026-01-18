@@ -16,8 +16,6 @@ import FilteredMap from "./components/FilteredMap";
 import TextDetails from "./components/TextDetails";
 import VCVisitationPlot from "./components/VCPlot";
 import SiteGauges from "./components/SiteGauges";
-import { useSelector } from "react-redux";
-import type { RootState } from "./store/store";
 import {
   FeatureSelection,
   SiteInfoRow,

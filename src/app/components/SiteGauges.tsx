@@ -67,7 +67,7 @@ export default function SiteGauges({
       });
     }
   }, [currentTheme, themeRef]);
-  
+
   if (!siteRow) return <h3>Select a Candidate Site for More Details.</h3>;
 
   const minVal = siteRow[

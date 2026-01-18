@@ -24,7 +24,7 @@ interface FilterState {
 }
 
 const initialState: FilterState = {
-  filterUnitcodes : [],
+  filterUnitcodes: [],
   showBookmarkedOnly: false,
   unitcodeFilteredSiteIDs: [],
 };
@@ -45,5 +45,9 @@ const filterSlice = createSlice({
   },
 });
 
-export const { setFilterUnitcodes, setShowBookmarkedOnly, setUnitcodeFilteredSiteIDs} = filterSlice.actions;
+export const {
+  setFilterUnitcodes,
+  setShowBookmarkedOnly,
+  setUnitcodeFilteredSiteIDs,
+} = filterSlice.actions;
 export default filterSlice.reducer;

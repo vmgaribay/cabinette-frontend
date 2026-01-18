@@ -18,8 +18,11 @@ import { toggleBookmark } from "../store/bookmarksSlice";
 import { useMemo } from "react";
 import type { RootState } from "../store/store";
 import { selectVisibleSiteIDs } from "../store/selector";
-import { HiArrowDownTray,HiArrowUpTray,HiOutlineBookmark } from "react-icons/hi2";
-
+import {
+  HiArrowDownTray,
+  HiArrowUpTray,
+  HiOutlineBookmark,
+} from "react-icons/hi2";
 
 /**
  * RankingTable component displaying a ranked list of sites.
@@ -39,17 +42,21 @@ export default function RankingTable({
   setSelectedFeature: (feature: FeatureSelection | null) => void;
 }) {
   const dispatch = useDispatch();
-  const bookmarkedSiteIds = useSelector((state: RootState) => state.bookmarks.siteIds);
+  const bookmarkedSiteIds = useSelector(
+    (state: RootState) => state.bookmarks.siteIds,
+  );
   const visibleSiteIDs = useSelector(selectVisibleSiteIDs);
-  const showBookmarkedOnly = useSelector((state: RootState) => state.filter.showBookmarkedOnly);
+  const showBookmarkedOnly = useSelector(
+    (state: RootState) => state.filter.showBookmarkedOnly,
+  );
 
   const visibleScoredSites = useMemo(() => {
-      const filtered =
-        visibleSiteIDs && visibleSiteIDs.length > 0
-          ? scoredSites.filter((site) => visibleSiteIDs.includes(site.id))
-          : scoredSites;
-      return filtered.sort((a, b) => b.score - a.score).slice(0, 10);
-    }, [scoredSites, visibleSiteIDs]);
+    const filtered =
+      visibleSiteIDs && visibleSiteIDs.length > 0
+        ? scoredSites.filter((site) => visibleSiteIDs.includes(site.id))
+        : scoredSites;
+    return filtered.sort((a, b) => b.score - a.score).slice(0, 10);
+  }, [scoredSites, visibleSiteIDs]);
 
   return (
     <div>
@@ -82,69 +89,81 @@ export default function RankingTable({
         </thead>
         <tbody>
           {bookmarkedSiteIds.length == 0 && showBookmarkedOnly ? (
-    <tr>
-      <td colSpan={4} style={{ textAlign: "center", color: "var(--accent)" }}>
-       No known bookmarks. Click the bookmark icon next to sites or upload bookmarks with the <HiArrowDownTray />/<HiArrowUpTray /> <HiOutlineBookmark /> Utilities button above.
-      </td>
-    </tr>
-  ) :
-            visibleSiteIDs.length == 0 && showBookmarkedOnly ? (
-    
-    <tr>
-      <td colSpan={4} style={{ textAlign: "center", color: "var(--accent)" }}>
-       No bookmarked sites match the current filter.
-      </td>
-    </tr>
-  ) : (visibleScoredSites.map((site, idx) => (
-            <tr
-              key={site.id}
-              className="table-row"
-              style={{
-                background:
-                  selectedFeature?.type === "site" &&
-                  selectedFeature.id === site.id
-                    ? "rgba(var(--xlight), 0.4)"
-                    : undefined,
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background = "rgba(var(--accent), 0.08)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.background =
-                  selectedFeature?.type === "site" &&
-                  selectedFeature.id === site.id
-                    ? "rgba(var(--xlight), 0.12)"
-                    : "transparent")
-              }
-              onClick={() => setSelectedFeature({ type: "site", id: site.id })}
-            >
-              <td className="table-cell" style={{ textAlign: "center" }}>
-                <input
-                  type="checkbox"
-                  checked={bookmarkedSiteIds.includes(site.id.toString())}
-                  onChange={() => dispatch(toggleBookmark(site.id.toString()))}
-                  style={{
-                    opacity: bookmarkedSiteIds.includes(site.id.toString())
-                      ? 0.9
-                      : 0.3,
-                    accentColor: "rgba(var(--light))",
-                    cursor: "pointer",
-                    width: "14px",
-                    height: "14px",
-                  }}
-                  title={
-                    bookmarkedSiteIds.includes(site.id.toString())
-                      ? "Remove Bookmark"
-                      : "Add Bookmark"
-                  }
-                />
+            <tr>
+              <td
+                colSpan={4}
+                style={{ textAlign: "center", color: "var(--accent)" }}
+              >
+                No known bookmarks. Click the bookmark icon next to sites or
+                upload bookmarks with the <HiArrowDownTray />/<HiArrowUpTray />{" "}
+                <HiOutlineBookmark /> Utilities button above.
               </td>
-              <td className="table-cell">{idx + 1}</td>
-              <td className="table-cell">{site.id}</td>
-              <td className="table-cell">{site.score.toFixed(3)}</td>
             </tr>
-          ))
-        )}
+          ) : visibleSiteIDs.length == 0 && showBookmarkedOnly ? (
+            <tr>
+              <td
+                colSpan={4}
+                style={{ textAlign: "center", color: "var(--accent)" }}
+              >
+                No bookmarked sites match the current filter.
+              </td>
+            </tr>
+          ) : (
+            visibleScoredSites.map((site, idx) => (
+              <tr
+                key={site.id}
+                className="table-row"
+                style={{
+                  background:
+                    selectedFeature?.type === "site" &&
+                    selectedFeature.id === site.id
+                      ? "rgba(var(--xlight), 0.4)"
+                      : undefined,
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.background =
+                    "rgba(var(--accent), 0.08)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.background =
+                    selectedFeature?.type === "site" &&
+                    selectedFeature.id === site.id
+                      ? "rgba(var(--xlight), 0.12)"
+                      : "transparent")
+                }
+                onClick={() =>
+                  setSelectedFeature({ type: "site", id: site.id })
+                }
+              >
+                <td className="table-cell" style={{ textAlign: "center" }}>
+                  <input
+                    type="checkbox"
+                    checked={bookmarkedSiteIds.includes(site.id.toString())}
+                    onChange={() =>
+                      dispatch(toggleBookmark(site.id.toString()))
+                    }
+                    style={{
+                      opacity: bookmarkedSiteIds.includes(site.id.toString())
+                        ? 0.9
+                        : 0.3,
+                      accentColor: "rgba(var(--light))",
+                      cursor: "pointer",
+                      width: "14px",
+                      height: "14px",
+                    }}
+                    title={
+                      bookmarkedSiteIds.includes(site.id.toString())
+                        ? "Remove Bookmark"
+                        : "Add Bookmark"
+                    }
+                  />
+                </td>
+                <td className="table-cell">{idx + 1}</td>
+                <td className="table-cell">{site.id}</td>
+                <td className="table-cell">{site.score.toFixed(3)}</td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
 

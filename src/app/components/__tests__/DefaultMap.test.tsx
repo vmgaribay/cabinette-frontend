@@ -10,6 +10,8 @@ jest.mock("react-leaflet", () => ({
   useMap: () => ({ fitBounds: jest.fn() }),
 }));
 import DefaultMap from "../DefaultMap";
+import configureStore from "redux-mock-store";
+import { Provider } from "react-redux";
 
 const sitesGeojsonMock = {
   features: [
@@ -39,6 +41,14 @@ const vcsGeojsonMock = {
   ],
 };
 
+const mockStore = configureStore([]);
+const initialState = {
+  filter: {
+    filterUnitcodes: ["JOTR"],
+  },
+};
+
+
 beforeEach(() => {
   global.fetch = jest.fn((url) =>
     Promise.resolve({
@@ -55,12 +65,10 @@ afterEach(() => {
 });
 
 test("container renders", async () => {
-  render(<DefaultMap unitcodes={["JOTR"]} />);
+  render(
+  <Provider store={mockStore(initialState)}>
+    <DefaultMap unitcodes={["JOTR"]} />
+  </Provider>
+  );
   await waitFor(() => expect(global.fetch).toHaveBeenCalled());
-});
-
-test("sitesVisible is called", async () => {
-  const sitesVisible = jest.fn();
-  render(<DefaultMap unitcodes={["JOTR"]} sitesVisible={sitesVisible} />);
-  await waitFor(() => expect(sitesVisible).toHaveBeenCalledWith(["site_1"]));
 });

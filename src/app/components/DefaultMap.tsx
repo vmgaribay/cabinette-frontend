@@ -103,7 +103,6 @@ function FitVisible({
   return null;
 }
 
-
 /**
  * Zooms map to selected feature.
  * @param {Object} props
@@ -198,8 +197,9 @@ export default function Map({
   >(undefined);
   const fetchIdRef = useRef(0);
 
-  const mapUnitcodes = useSelector((state: RootState) => state.filter.filterUnitcodes);
-
+  const mapUnitcodes = useSelector(
+    (state: RootState) => state.filter.filterUnitcodes,
+  );
 
   const { minScore, maxScore } = useMemo(() => {
     if (!scoreID) return { minScore: undefined, maxScore: undefined };
@@ -208,76 +208,77 @@ export default function Map({
     return { minScore: min, maxScore: max };
   }, [scoreID]);
 
+  useEffect(() => {
+    const currentId = ++fetchIdRef.current;
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const params =
+      mapUnitcodes && mapUnitcodes.length > 0
+        ? `?unitcodes=${mapUnitcodes.map(encodeURIComponent).join(",")}`
+        : "";
 
-useEffect(() => {
-  const currentId = ++fetchIdRef.current;
-  const controller = new AbortController();
-  const signal = controller.signal;
-  const params =
-    mapUnitcodes && mapUnitcodes.length > 0
-      ? `?unitcodes=${mapUnitcodes.map(encodeURIComponent).join(",")}`
-      : "";
+    (async () => {
+      try {
+        const [sitesRes, vcsRes] = await Promise.all([
+          fetch(`/api/map/site-polygons${params}`, {
+            signal,
+            cache: "no-store",
+          }),
+          fetch(`/api/map/vc-points${params}`, { signal, cache: "no-store" }),
+        ]);
+        const [sitesData, vcsData] = await Promise.all([
+          sitesRes.json(),
+          vcsRes.json(),
+        ]);
 
-  (async () => {
-    try {
-      const [sitesRes, vcsRes] = await Promise.all([
-        fetch(`/api/map/site-polygons${params}`, {
-          signal,
-          cache: "no-store",
-        }),
-        fetch(`/api/map/vc-points${params}`, { signal, cache: "no-store" }),
-      ]);
-      const [sitesData, vcsData] = await Promise.all([
-        sitesRes.json(),
-        vcsRes.json(),
-      ]);
+        let filteredSitesData = sitesData;
+        if (filteredSiteIds && filteredSiteIds.length > 0) {
+          filteredSitesData = {
+            ...sitesData,
+            features: sitesData.features.filter((feature: Feature) =>
+              filteredSiteIds.includes(feature.properties?.id),
+            ),
+          };
+        }
 
-      let filteredSitesData = sitesData;
-      if (filteredSiteIds && filteredSiteIds.length > 0) {
-        filteredSitesData = {
-          ...sitesData,
-          features: sitesData.features.filter(
-            (feature: Feature) => filteredSiteIds.includes(feature.properties?.id)
-          ),
-        };
+        if (fetchIdRef.current === currentId) {
+          setSitesGeojson(filteredSitesData);
+          setVCsGeojson(vcsData);
+        }
+      } catch (err: unknown) {
+        if ((err as Error).name !== "AbortError")
+          console.error("Map fetch error:", err);
       }
+    })();
 
-      if (fetchIdRef.current === currentId) {
-        setSitesGeojson(filteredSitesData);
-        setVCsGeojson(vcsData);
+    return () => controller.abort();
+  }, [mapUnitcodes, filteredSiteIds]);
+
+  useEffect(() => {
+    if (!selectedFeature) return;
+
+    if (
+      selectedFeature.type === "site" &&
+      sitesGeojson &&
+      !sitesGeojson.features.some(
+        (f) => f.properties?.id === selectedFeature.id,
+      )
+    ) {
+      if (setSelectedFeature) {
+        setSelectedFeature(null);
       }
-    } catch (err: unknown) {
-      if ((err as Error).name !== "AbortError")
-        console.error("Map fetch error:", err);
     }
-  })();
 
-  return () => controller.abort();
-}, [mapUnitcodes, filteredSiteIds]);
-
-useEffect(() => {
-  if (!selectedFeature) return;
-
-  if (
-    selectedFeature.type === "site" &&
-    sitesGeojson &&
-    !sitesGeojson.features.some(
-      (f) => f.properties?.id === selectedFeature.id
-    )
-  ) {
-    setSelectedFeature && setSelectedFeature(null);
-  }
-
-  if (
-    selectedFeature.type === "vc" &&
-    vcsGeojson &&
-    !vcsGeojson.features.some(
-      (f) => f.properties?.id === selectedFeature.id
-    )
-  ) {
-    setSelectedFeature && setSelectedFeature(null);
-  }
-}, [selectedFeature, sitesGeojson, vcsGeojson, setSelectedFeature]);
+    if (
+      selectedFeature.type === "vc" &&
+      vcsGeojson &&
+      !vcsGeojson.features.some((f) => f.properties?.id === selectedFeature.id)
+    ) {
+      if (setSelectedFeature) {
+        setSelectedFeature(null);
+      }
+    }
+  }, [selectedFeature, sitesGeojson, vcsGeojson, setSelectedFeature]);
 
   const vcPoints =
     vcsGeojson?.features?.map(
@@ -349,8 +350,8 @@ useEffect(() => {
       style={{ height: "100%", width: "100%" }}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-  {selectedFeature == null && (
-      <FitVisible siteGeojson={sitesGeojson} vcPoints={vcPoints} />
+      {selectedFeature == null && (
+        <FitVisible siteGeojson={sitesGeojson} vcPoints={vcPoints} />
       )}
       <ZoomToSelection
         selectedFeature={selectedFeature}
@@ -361,7 +362,9 @@ useEffect(() => {
       {sitesGeojson && (
         <GeoJSON
           key={
-            mapUnitcodes && mapUnitcodes.length ? mapUnitcodes.join(",") : "all-sites"
+            mapUnitcodes && mapUnitcodes.length
+              ? mapUnitcodes.join(",")
+              : "all-sites"
           }
           data={sitesGeojson}
           style={geoJsonStyle}

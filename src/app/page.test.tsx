@@ -44,7 +44,7 @@ describe("Main Page", () => {
     mockWeightsProxies.mockClear();
   });
 
-  it("renders heading and components", async () => {
+  test("renders heading and components", async () => {
     render(
       <Provider store={store}>
         <Home />
@@ -58,7 +58,7 @@ describe("Main Page", () => {
     });
   });
 
-  it("fetches data on mount", async () => {
+  test("fetches data on mount", async () => {
     render(
       <Provider store={store}>
         <Home />
@@ -69,92 +69,5 @@ describe("Main Page", () => {
       expect(global.fetch).toHaveBeenCalledWith("/api/details/vc_info");
       expect(global.fetch).toHaveBeenCalledWith("/api/details/visitation");
     });
-  });
-
-  it("filters and sorts scoredSites", async () => {
-    (global.fetch as jest.Mock)
-      .mockClear()
-      .mockResolvedValueOnce({
-        json: async () => [
-          {
-            id: "a",
-            combined_overall_avg_monthly_visitation_norm: 1,
-            combined_min_monthly_visitation_norm: 0,
-            combined_max_monthly_visitation_norm: 0,
-            nearest_park_min_monthly_visitation_norm: 0,
-            nearest_park_max_monthly_visitation_norm: 0,
-            nearest_park_overall_avg_monthly_visitation_norm: 0,
-            lodging_for_site_norm: 0,
-            combined_lodging_norm: 0,
-            combined_vc_distance_norm: 0,
-            nearest_vc_distance_norm: 0,
-            nearest_road_distance_norm: 0,
-          },
-          {
-            id: "b",
-            combined_overall_avg_monthly_visitation_norm: 2,
-            combined_min_monthly_visitation_norm: 0,
-            combined_max_monthly_visitation_norm: 0,
-            nearest_park_min_monthly_visitation_norm: 0,
-            nearest_park_max_monthly_visitation_norm: 0,
-            nearest_park_overall_avg_monthly_visitation_norm: 0,
-            lodging_for_site_norm: 0,
-            combined_lodging_norm: 0,
-            combined_vc_distance_norm: 0,
-            nearest_vc_distance_norm: 0,
-            nearest_road_distance_norm: 0,
-          },
-          {
-            id: "c",
-            combined_overall_avg_monthly_visitation_norm: 3,
-            combined_min_monthly_visitation_norm: 0,
-            combined_max_monthly_visitation_norm: 0,
-            nearest_park_min_monthly_visitation_norm: 0,
-            nearest_park_max_monthly_visitation_norm: 0,
-            nearest_park_overall_avg_monthly_visitation_norm: 0,
-            lodging_for_site_norm: 0,
-            combined_lodging_norm: 0,
-            combined_vc_distance_norm: 0,
-            nearest_vc_distance_norm: 0,
-            nearest_road_distance_norm: 0,
-          },
-        ],
-      })
-      .mockResolvedValueOnce({ json: async () => [] })
-      .mockResolvedValueOnce({ json: async () => [] });
-
-    render(
-      <Provider store={store}>
-        <Home />
-      </Provider>
-    );
-await waitFor(() => {
-  const filteredMapCalls = mockFilteredMap.mock.calls;
-  const initialCall = filteredMapCalls.find(
-    ([props]) => props.scoredSites && props.scoredSites.length === 3
-  );
-  expect(initialCall).toBeDefined();
-  const initialProps = initialCall[0];
-  expect(initialProps.scoredSites).toHaveLength(3);
-  expect(initialProps.scoredSites[0].id).toBe("c");
-  expect(initialProps.scoredSites[1].id).toBe("b");
-  expect(initialProps.scoredSites[2].id).toBe("a");
-
-
-
-    const sitesVisibleCallback = initialProps.sitesVisible;
-    act(() => sitesVisibleCallback(["a", "c"]));
-
-
-const filteredCall = filteredMapCalls.find(
-  ([props]) =>
-    props.scoredSites &&
-    props.scoredSites.length === 2 &&
-    props.scoredSites[0].id === "c" &&
-    props.scoredSites[1].id === "a"
-);
-expect(filteredCall).toBeDefined();
-});
-
   });
 });

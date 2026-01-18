@@ -14,9 +14,9 @@ import { toggleTheme } from "../store/themeSlice";
 import type { RootState } from "../store/store";
 
 /**
-  * ThemeToggle component for switching between themes.
-  * @returns {JSX.Element}
-*/
+ * ThemeToggle component for switching between themes.
+ * @returns {JSX.Element}
+ */
 export default function ThemeToggle() {
   const dispatch = useDispatch();
   const currentTheme = useSelector((state: RootState) => state.theme.mode);
