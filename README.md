@@ -51,11 +51,16 @@ Inspired by the Power BI dashboard created for Cabinette, this is a similar inte
 └───__mocks__/mockStyles.ts         # empty style for unit tests
 ```
 
+## Data
+
+The Postgres database was built as described in [Cabinette](https://github.com/vmgaribay/cabinette.git). Relevant tables are live on Neon and accessed via Next.js API routes. The pared-down database used by the application and instructions on hosting it remotely are available on Zenodo, [doi:10.5281/zenodo.18110980](https://doi.org/10.5281/zenodo.18110980).
+
 ## Local Testing
 ### Prerequisites
 
 - Node.js (v18+)
-- npm or similar package manager
+- npm (or similar package manager)
+- Remote Postgres database with relevant tables (see Data section)
 
 ### Installation
 
@@ -72,10 +77,6 @@ npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Data
-
-The Postgres database was built as described in [Cabinette](https://github.com/vmgaribay/cabinette.git). Relevant tables are live on Neon and accessed via Next.js API routes. The pared-down database used by the application and instructions on hosting it remotely are available on Zenodo, [doi:10.5281/zenodo.18110980](https://doi.org/10.5281/zenodo.18110980).
-
 ## Deployment
 
 The application is deployed on Vercel at [https://cabinette-frontend.vercel.app/](https://cabinette-frontend.vercel.app/). The Neon database connection string was set as the `DATABASE_URL` environment variable for deployment.
@@ -85,4 +86,4 @@ I acknowledge that I consulted resources such as GitHub Copilot (GPT-5, GPT-5 mi
 
 ## Contact
 
-Victoria Garibay, Ph.D. — [Contact Form](https://vmgaribay.github.io/portfolio/contact_form.html) | [GitHub Profile](https://github.com/vmgaribay)
+Victoria Garibay, Ph.D. — [Email Contact Form](https://vmgaribay.github.io/portfolio/contact_form.html) | [GitHub Profile](https://github.com/vmgaribay)

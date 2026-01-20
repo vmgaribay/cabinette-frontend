@@ -14,7 +14,6 @@ import { useState, useEffect, useRef } from "react";
 import type { RootState } from "../store/store";
 import { setShowBookmarkedOnly } from "../store/filterSlice";
 import { setBookmarks } from "../store/bookmarksSlice";
-import { getCSSVar } from "../utils/retrieveVar";
 import {
   HiArrowDownTray,
   HiArrowUpTray,
@@ -33,29 +32,7 @@ import {
  * @param {RefObject<HTMLDivElement|null>} props.themeRef - Reference to themed div.
  * @returns {JSX.Element}
  */
-export default function BookmarksFilter({
-  themeRef,
-}: {
-  themeRef: React.RefObject<HTMLDivElement | null>;
-}) {
-  const [colors, setColors] = useState({
-    light: "",
-    xlight: "",
-    dark: "",
-    accent: "",
-  });
-
-  useEffect(() => {
-    if (themeRef.current) {
-      setColors({
-        light: getCSSVar("--light", themeRef.current),
-        xlight: getCSSVar("--xlight", themeRef.current),
-        dark: getCSSVar("--dark", themeRef.current),
-        accent: getCSSVar("--accent", themeRef.current),
-      });
-    }
-  }, [themeRef]);
-
+export default function BookmarksFilter() {
   const dispatch = useDispatch();
   const showBookmarkedOnly = useSelector(
     (state: RootState) => state.filter.showBookmarkedOnly,
@@ -112,6 +89,7 @@ export default function BookmarksFilter({
     a.click();
     URL.revokeObjectURL(url);
     addMessage("Download of all bookmarks initialized.");
+    setMenuOpen(false);
   }
 
   /**
@@ -151,6 +129,7 @@ export default function BookmarksFilter({
       }
     };
     reader.readAsText(file);
+    setMenuOpen(false);
   }
 
   /**
@@ -185,6 +164,7 @@ export default function BookmarksFilter({
       }
     };
     reader.readAsText(file);
+    setMenuOpen(false);
   }
 
   /**
@@ -210,39 +190,31 @@ export default function BookmarksFilter({
   }
 
   return (
-    <label
-      style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 8 }}
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 14,
+        marginBottom: 7,
+        position: "relative",
+      }}
     >
-      <input
-        type="checkbox"
-        checked={showBookmarkedOnly}
-        onChange={(e) => dispatch(setShowBookmarkedOnly(e.target.checked))}
-        disabled={bookmarks.length === 0}
-      />
-      {messageQueue.length > 0 && (
-        <div style={{ position: "fixed", top: 0, left: 30, zIndex: 1000 }}>
-          <div key={messageQueue[0].id} className="popup">
-            {messageQueue[0].text}
-          </div>
-        </div>
-      )}
-      <span style={{ color: `rgba(${colors.light}, 0.8)`, fontSize: 14 }}>
-        Show only bookmarked sites
-      </span>
+      <label style={{ display: "flex", alignItems: "center", marginBottom: 1 }}>
+        <input
+          type="checkbox"
+          checked={showBookmarkedOnly}
+          onChange={(e) => dispatch(setShowBookmarkedOnly(e.target.checked))}
+          disabled={bookmarks.length === 0}
+        />
+        <span style={{ color: `rgba(var(--light), 0.9)`, fontSize: 14 }}>
+          Show only bookmarked sites
+        </span>
+      </label>
       <button
+        className="highlight-button"
         onClick={() => setMenuOpen((open) => !open)}
         title="Save or load existing bookmarks"
-        style={{
-          fontSize: 14,
-          color: `rgb(${colors.light})`,
-          padding: "2px 8px",
-          background: `rgba(${colors.xlight},0.1)`,
-          border: `1px solid rgb(${colors.accent})`,
-          borderRadius: 6,
-          cursor: "pointer",
-        }}
       >
-        {" "}
         <HiArrowDownTray />/<HiArrowUpTray /> <HiOutlineBookmark /> Utilities
       </button>
       {menuOpen && (
@@ -251,12 +223,12 @@ export default function BookmarksFilter({
           style={{
             position: "absolute",
             zIndex: 10,
-            background: `rgba(${colors.dark})`,
-            border: `1px solid rgb(${colors.accent})`,
+            background: `rgba(var(--dark))`,
+            border: `1px solid rgb(var(--accent))`,
             borderRadius: 6,
-            boxShadow: `0 2px 8px rgba(${colors.dark},0.1)`,
+            boxShadow: `0 2px 8px rgba(var(--dark),0.1)`,
             marginTop: 153,
-            left: 169,
+            left: 138,
             minWidth: 180,
           }}
         >
@@ -301,7 +273,14 @@ export default function BookmarksFilter({
             X Cancel
           </button>
         </div>
-      )}{" "}
-    </label>
+      )}
+      {messageQueue.length > 0 && (
+        <div style={{ position: "fixed", top: 0, left: 30, zIndex: 1000 }}>
+          <div key={messageQueue[0].id} className="popup">
+            {messageQueue[0].text}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

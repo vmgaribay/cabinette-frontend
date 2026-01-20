@@ -34,7 +34,7 @@ if (!("revokeObjectURL" in URL)) {
 test('bookmark filter toggles', () => {
   render(
     <Provider store={store}>
-      <BookmarksFilter themeRef={themeRef} />
+      <BookmarksFilter />
     </Provider>
   );
     const toggle = screen.getByRole("checkbox", { name: /show only/i });
@@ -51,7 +51,7 @@ test('bookmark filter toggles', () => {
 test('opens and closes the utilities menu', () => {
     render(
     <Provider store={store}>
-        <BookmarksFilter themeRef={themeRef} />
+        <BookmarksFilter />
     </Provider>
     );
     const utilitiesButton = screen.getByRole("button", { name: /Utilities/i });
@@ -65,7 +65,7 @@ test('opens and closes the utilities menu', () => {
 test('exports bookmarks as JSON', () => {
   render(
     <Provider store={store}>
-      <BookmarksFilter themeRef={themeRef} />
+      <BookmarksFilter />
     </Provider>
   );
   fireEvent.click(screen.getByRole("button", { name: /Utilities/i }));
@@ -85,7 +85,7 @@ fireEvent.click(downloadButton);
 test('bookmarks imported and overwritten', () => {
   render(
     <Provider store={store}>
-      <BookmarksFilter themeRef={themeRef} />
+      <BookmarksFilter />
     </Provider>
   );
   fireEvent.click(screen.getByRole("button", { name: /Utilities/i }));
@@ -116,7 +116,7 @@ test('bookmarks imported and overwritten', () => {
 test('merges bookmarks and exports', () => {
     render(
     <Provider store={store}>
-      <BookmarksFilter themeRef={themeRef} />
+      <BookmarksFilter />
     </Provider>
   );
     fireEvent.click(screen.getByRole("button", { name: /Utilities/i }));

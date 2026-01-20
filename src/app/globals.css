@@ -53,6 +53,10 @@
   font-family: "Lucida Sans", "Perpetua", serif;
 }
 
+.multi-select option:hover {
+  background: rgba(var(--accent), 0.08);
+}
+
 .multi-select::-webkit-scrollbar {
   width: 8px;
   background: transparent;
@@ -189,8 +193,8 @@
   top: 0;
   left: 30;
   width: 234;
-  background: rgb(var(--light));
-  color: rgb(var(--dark));
+  background: rgb(var(--accent));
+  color: rgb(24, 20, 27);
   padding: 21px 50px;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(var(--dark), 0.2);
@@ -200,4 +204,22 @@
   overflow-wrap: break-word;
   opacity: 1;
   animation: fade-out 1s ease 5s forwards;
+}
+
+.highlight-button {
+  font-size: 14px;
+  color: rgb(var(--light));
+  padding: 2px 8px;
+  background: rgb(var(--dark));
+  border: 1px solid rgb(var(--accent));
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(var(--accent), 0.15);
+  transition:
+    box-shadow 0.15s,
+    border-color 0.1s;
+}
+.highlight-button:hover {
+  background: rgba(var(--accent), 0.08);
+  box-shadow: 0 4px 12px rgba(var(--accent), 0.15);
 }

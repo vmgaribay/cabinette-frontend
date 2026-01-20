@@ -111,7 +111,7 @@ export default function FilteredMap({
         <label className="multi-select-header" style={{ marginTop: 0 }}>
           Filter Site Visibility:
         </label>
-        <BookmarksFilter themeRef={themeRef} />
+        <BookmarksFilter />
         <select
           multiple
           value={filterUnitcodes}
@@ -141,18 +141,10 @@ export default function FilteredMap({
           </span>
           <button
             type="button"
+            className="highlight-button"
             onClick={() => {
               dispatch(setFilterUnitcodes([]));
               dispatch(setShowBookmarkedOnly(false));
-            }}
-            style={{
-              fontSize: 12,
-              color: `rgb(${colors.light})`,
-              padding: "2px 8px",
-              background: `rgba(${colors.xlight},0.1)`,
-              border: `1px solid rgb(${colors.accent})`,
-              borderRadius: 6,
-              cursor: "pointer",
             }}
           >
             Clear Filters
