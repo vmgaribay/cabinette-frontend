@@ -20,13 +20,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface FilterState {
   filterUnitcodes: string[];
   showBookmarkedOnly: boolean;
-  unitcodeFilteredSiteIDs: string[];
 }
 
 const initialState: FilterState = {
   filterUnitcodes: [],
   showBookmarkedOnly: false,
-  unitcodeFilteredSiteIDs: [],
 };
 
 const filterSlice = createSlice({
@@ -39,15 +37,9 @@ const filterSlice = createSlice({
     setShowBookmarkedOnly(state, action: PayloadAction<boolean>) {
       state.showBookmarkedOnly = action.payload;
     },
-    setUnitcodeFilteredSiteIDs(state, action: PayloadAction<string[]>) {
-      state.unitcodeFilteredSiteIDs = action.payload;
-    },
   },
 });
 
-export const {
-  setFilterUnitcodes,
-  setShowBookmarkedOnly,
-  setUnitcodeFilteredSiteIDs,
-} = filterSlice.actions;
+export const { setFilterUnitcodes, setShowBookmarkedOnly } =
+  filterSlice.actions;
 export default filterSlice.reducer;

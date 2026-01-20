@@ -22,6 +22,7 @@ test("ranking table renders", () => {
     <Provider store={store}>
     <RankingTable
       scoredSites={scoredSites}
+      visibleSiteIDs={["site1","site2","site3"]}
       selectedFeature={null}
       setSelectedFeature={() => {}}
     />
@@ -44,6 +45,7 @@ test("reaction to row click", () => {
 
     <RankingTable
       scoredSites={scoredSites}
+      visibleSiteIDs={["site1","site2","site3"]}
       selectedFeature={{ type: "site", id: "site2" }}
       setSelectedFeature={setSelectedFeature}
     />
@@ -64,6 +66,7 @@ test("checkbox dispatches toggleBookmark", () => {
     <Provider store={store}>
       <RankingTable
         scoredSites= {scoredSites}
+        visibleSiteIDs={["site1","site2","site3"]}
         selectedFeature={null}
         setSelectedFeature={() => {}}
       />
@@ -81,6 +84,7 @@ test("rendered sites sorted by score descending", () => {
     <Provider store={store}>
       <RankingTable
         scoredSites={scoredSites}
+        visibleSiteIDs={["site1","site2","site3"]}
         selectedFeature={null}
         setSelectedFeature={() => {}}
       />
@@ -102,6 +106,7 @@ test("sites filtered based on visibleSiteIDs", () => {
     <Provider store={store}>
       <RankingTable
         scoredSites={scoredSites}
+        visibleSiteIDs={["site2"]}
         selectedFeature={null}
         setSelectedFeature={() => {}}
       />

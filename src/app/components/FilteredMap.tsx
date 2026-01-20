@@ -19,12 +19,12 @@ import RankingTable from "./RankingTable";
 import BookmarksFilter from "./BookmarksFilter";
 import { setShowBookmarkedOnly } from "../store/filterSlice";
 import { setFilterUnitcodes } from "../store/filterSlice";
-import { setUnitcodeFilteredSiteIDs } from "../store/filterSlice";
 
 import { FeatureSelection, SiteInfoRow } from "../types";
 const DynamicMap = dynamic(() => import("./DefaultMap"), { ssr: false });
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../store/store";
+import { makeSelectVisibleSiteIDs } from "../store/selector";
 import { getCSSVar } from "../utils/retrieveVar";
 
 type Park = { unitcode: string; parkname: string };
@@ -70,23 +70,10 @@ export default function FilteredMap({
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(
-      setUnitcodeFilteredSiteIDs(
-        scoredSites
-          .filter((site) => {
-            if (filterUnitcodes.length === 0) return true;
-            const siteUnitcodes = site.parks_within_30_mi_unitcodes
-              ? site.parks_within_30_mi_unitcodes
-                  .split(",")
-                  .map((s) => s.trim())
-              : [];
-            return filterUnitcodes.some((code) => siteUnitcodes.includes(code));
-          })
-          .map((site) => site.id),
-      ),
-    );
-  }, [filterUnitcodes, scoredSites, dispatch]);
+  const selectVisibleSiteIDs = useMemo(() => makeSelectVisibleSiteIDs(), []);
+  const visibleSiteIDs = useSelector((state: RootState) =>
+    selectVisibleSiteIDs(state, scoredSites),
+  );
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -174,6 +161,7 @@ export default function FilteredMap({
 
         <RankingTable
           scoredSites={scoredSites}
+          visibleSiteIDs={visibleSiteIDs}
           selectedFeature={selectedFeature}
           setSelectedFeature={setSelectedFeature}
         />
@@ -185,6 +173,7 @@ export default function FilteredMap({
         {
           <DynamicMap
             scoreID={scoreID}
+            visibleSiteIDs={visibleSiteIDs}
             selectedFeature={selectedFeature}
             setSelectedFeature={setSelectedFeature}
           />

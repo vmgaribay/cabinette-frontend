@@ -16,18 +16,33 @@ import { createSelector } from "@reduxjs/toolkit";
  * @param {Object} state - The Redux state.
  * @returns {string[]} Array of visible site IDs.
  */
-export const selectVisibleSiteIDs = createSelector(
-  [
-    (state) => state.filter.unitcodeFilteredSiteIDs,
-    (state) => state.filter.showBookmarkedOnly,
-    (state) => state.bookmarks.siteIds,
-  ],
-  (unitcodeFilteredSiteIDs, showBookmarkedOnly, bookmarkedIDs) => {
-    if (showBookmarkedOnly) {
-      return unitcodeFilteredSiteIDs.filter((id: string) =>
-        bookmarkedIDs.includes(id),
-      );
-    }
-    return unitcodeFilteredSiteIDs;
-  },
-);
+
+import { RootState } from "./store";
+import { SiteInfoRow } from "../types";
+
+export const makeSelectVisibleSiteIDs = () =>
+  createSelector(
+    [
+      (_: RootState, scoredSites: SiteInfoRow[]) => scoredSites,
+      (state: RootState) => state.filter.filterUnitcodes,
+      (state: RootState) => state.filter.showBookmarkedOnly,
+      (state: RootState) => state.bookmarks.siteIds,
+    ],
+    (scoredSites, filterUnitcodes, showBookmarkedOnly, bookmarkedIDs) => {
+      let filtered = scoredSites;
+
+      if (showBookmarkedOnly) {
+        if (bookmarkedIDs.length === 0) return [];
+        filtered = filtered.filter((site) => bookmarkedIDs.includes(site.id));
+      }
+      if (filterUnitcodes.length > 0) {
+        filtered = filtered.filter((site) => {
+          const siteUnitcodes = site.parks_within_30_mi_unitcodes
+            ? site.parks_within_30_mi_unitcodes.split(",").map((s) => s.trim())
+            : [];
+          return filterUnitcodes.some((code) => siteUnitcodes.includes(code));
+        });
+      }
+      return filtered.map((site) => site.id);
+    },
+  );

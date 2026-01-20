@@ -17,7 +17,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleBookmark } from "../store/bookmarksSlice";
 import { useMemo } from "react";
 import type { RootState } from "../store/store";
-import { selectVisibleSiteIDs } from "../store/selector";
 import {
   HiArrowDownTray,
   HiArrowUpTray,
@@ -34,10 +33,12 @@ import {
  */
 export default function RankingTable({
   scoredSites,
+  visibleSiteIDs,
   selectedFeature,
   setSelectedFeature,
 }: {
   scoredSites: (SiteInfoRow & { score: number })[];
+  visibleSiteIDs: string[];
   selectedFeature: FeatureSelection | null;
   setSelectedFeature: (feature: FeatureSelection | null) => void;
 }) {
@@ -45,7 +46,6 @@ export default function RankingTable({
   const bookmarkedSiteIds = useSelector(
     (state: RootState) => state.bookmarks.siteIds,
   );
-  const visibleSiteIDs = useSelector(selectVisibleSiteIDs);
   const showBookmarkedOnly = useSelector(
     (state: RootState) => state.filter.showBookmarkedOnly,
   );

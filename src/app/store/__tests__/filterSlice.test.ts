@@ -1,13 +1,11 @@
 import filterReducer, {
   setFilterUnitcodes,
   setShowBookmarkedOnly,
-  setUnitcodeFilteredSiteIDs,
 } from "../filterSlice";
 
   const initialState = {
     filterUnitcodes: [],
     showBookmarkedOnly: false,
-    unitcodeFilteredSiteIDs: [],
   };
 
   test("returns initial state", () => {
@@ -22,11 +20,6 @@ import filterReducer, {
   test("handles setShowBookmarkedOnly", () => {
     const nextState = filterReducer(initialState, setShowBookmarkedOnly(true));
     expect(nextState.showBookmarkedOnly).toBe(true);
-  });
-
-  test("handles setUnitcodeFilteredSiteIDs", () => {
-    const nextState = filterReducer(initialState, setUnitcodeFilteredSiteIDs(["site1", "site2"]));
-    expect(nextState.unitcodeFilteredSiteIDs).toEqual(["site1", "site2"]);
   });
 
   test("immutability check", () => {
