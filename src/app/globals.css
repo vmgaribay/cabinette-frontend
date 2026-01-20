@@ -1,26 +1,27 @@
 @import "./style.css";
 .ranking-table {
-  width: 95%;
+  width: 100%;
   border-collapse: collapse;
   margin-top: -2px;
-  background: rgba(24, 20, 27, 0.85);
+  background: rgba(var(--dark), 0.85);
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(24, 20, 27, 0.18);
-  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(var(--dark), 0.18);
+  border-radius: 12px;
 }
 
 .table-row {
   border: none;
-  border-bottom: 1px solid rgba(215, 218, 223, 0.1);
+  border-bottom: 1px solid rgba(var(--xlight), 0.1);
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .table-cell {
   border: none;
-  border-bottom: 1px solid rgba(215, 218, 223, 0.3);
+  border-bottom: 1px solid rgba(var(--xlight), 0.3);
+  color: rgb(var(--light));
   text-align: center;
-  padding: 4px 4px;
+  padding: 2px 3px;
 }
 
 .table-header {
@@ -37,7 +38,7 @@
   color: rgb(var(--xlight));
   padding: 2px;
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   font-weight: bold;
 }
 
@@ -50,6 +51,10 @@
   border-radius: 6px;
   padding: 4px;
   font-family: "Lucida Sans", "Perpetua", serif;
+}
+
+.multi-select option:hover {
+  background: rgba(var(--accent), 0.08);
 }
 
 .multi-select::-webkit-scrollbar {
@@ -94,11 +99,11 @@
 }
 
 .plot-card {
-  background: rgba(var(--dark), 0.92);
+  background: rgba(var(--dark), 0.9);
   color: rgb(var(--light));
-  border: 1.5px solid rgba(var(--accent), 0.35);
-  border-radius: 18px;
-  box-shadow: 0 4px 16px rgba(var(--dark), 0.35);
+  border: 1.5px solid rgba(var(--accent), 0.4);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(var(--dark), 0.4);
   font-family: "Lucida Sans", "Perpetua", serif;
 }
 
@@ -121,6 +126,7 @@
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 1rem;
+  color: rgb(var(--light));
 }
 
 .slider {
@@ -139,4 +145,81 @@
   border-radius: 8px;
   font-family: "Lucida Sans", "Perpetua", serif;
   padding: 0.25rem 0.5rem;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid rgb(var(--accent));
+  border-top: 5px solid #000000ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.menu-item {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: rgb(var(--light));
+}
+.menu-item:focus,
+.menu-item:active {
+  color: rgb(var(--light));
+}
+.menu-item:hover {
+  background: rgba(var(--accent), 0.1);
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.popup {
+  position: fixed;
+  top: 0;
+  left: 30;
+  width: 234;
+  background: rgb(var(--accent));
+  color: rgb(24, 20, 27);
+  padding: 21px 50px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(var(--dark), 0.2);
+  z-index: 1000;
+  font-size: 14px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  opacity: 1;
+  animation: fade-out 1s ease 5s forwards;
+}
+
+.highlight-button {
+  font-size: 14px;
+  color: rgb(var(--light));
+  padding: 2px 8px;
+  background: rgb(var(--dark));
+  border: 1px solid rgb(var(--accent));
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(var(--accent), 0.15);
+  transition:
+    box-shadow 0.15s,
+    border-color 0.1s;
+}
+.highlight-button:hover {
+  background: rgba(var(--accent), 0.08);
+  box-shadow: 0 4px 12px rgba(var(--accent), 0.15);
 }

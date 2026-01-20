@@ -4,13 +4,11 @@
  * React component for interactive Leaflet map.
  * - Fetches GeoJSON data for sites and visitor centers.
  * - Displays polygons and points with color-coding based on scores.
- * - Supports selection and zooming to features.
- * - Notifies parent of visible site IDs.
+ * - Supports zooming to feature selection.
+ * - Handles filtering.
  *
  * Props:
- * - unitcodes: Array of unit codes to filter displayed features.
  * - scoreID: Mapping from site IDs to scores for color-coding.
- * - sitesVisible: Callback to notify parent of currently visible sites.
  * - selectedFeature: Currently selected feature.
  * - setSelectedFeature: Callback to update selected feature.
  */
@@ -32,6 +30,9 @@ import type {
 } from "geojson";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { FeatureSelection } from "../types";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
+// import { selectVisibleSiteIDs } from "../store/selector";
 
 /**
  * Zooms map to fit visible features.
@@ -174,33 +175,43 @@ function ZoomToSelection({
 /**
  * Map component displaying sites and visitor centers.
  * @param {Object} props
- * @param {string[]} [props.unitcodes] - Array of unit codes, used to filter features.
- * @param {Object.<string, number>} props.scoreID - Mapping from site IDs to scores.
- * @param {(ids: string[]) => void} [props.sitesVisible] - Callback with visible site IDs.
  * @param {FeatureSelection|null} [props.selectedFeature] - Currently selected feature.
  * @param {(feature: FeatureSelection|null) => void} [props.setSelectedFeature] - Callback to update selected feature.
  * @returns {JSX.Element}
  */
 export default function Map({
-  unitcodes,
-  sitesVisible,
   scoreID,
+  visibleSiteIDs,
   selectedFeature,
   setSelectedFeature,
 }: {
-  unitcodes?: string[];
   scoreID: Record<string, number>;
-  sitesVisible?: (ids: string[]) => void;
+  visibleSiteIDs: string[];
   selectedFeature?: FeatureSelection | null;
   setSelectedFeature?: (feature: FeatureSelection | null) => void;
 }) {
-  const [sitesGeojson, setSitesGeojson] = useState<
+  const [allSitesData, setAllSitesData] = useState<
     FeatureCollection | undefined
   >(undefined);
   const [vcsGeojson, setVCsGeojson] = useState<
     FeatureCollection<Point> | undefined
   >(undefined);
   const fetchIdRef = useRef(0);
+
+  const sitesGeojson = useMemo(() => {
+    if (!allSitesData) return undefined;
+    //if (!visibleSiteIDs || visibleSiteIDs.length === 0) return allSitesData;
+    return {
+      ...allSitesData,
+      features: allSitesData.features.filter((feature: Feature) =>
+        visibleSiteIDs.includes(feature.properties?.id),
+      ),
+    };
+  }, [allSitesData, visibleSiteIDs]);
+
+  const filteredUnitcodes = useSelector(
+    (state: RootState) => state.filter.filterUnitcodes,
+  );
 
   const { minScore, maxScore } = useMemo(() => {
     if (!scoreID) return { minScore: undefined, maxScore: undefined };
@@ -210,31 +221,18 @@ export default function Map({
   }, [scoreID]);
 
   useEffect(() => {
-    if (sitesGeojson && sitesGeojson.features) {
-      const ids = sitesGeojson.features.map(
-        (feature: Feature) => feature.properties?.id,
-      );
-      if (sitesVisible) sitesVisible(ids);
-    }
-  }, [sitesGeojson, sitesVisible]);
-
-  useEffect(() => {
     const currentId = ++fetchIdRef.current;
     const controller = new AbortController();
     const signal = controller.signal;
-    const params =
-      unitcodes && unitcodes.length > 0
-        ? `?unitcodes=${unitcodes.map(encodeURIComponent).join(",")}`
-        : "";
 
     (async () => {
       try {
         const [sitesRes, vcsRes] = await Promise.all([
-          fetch(`/api/map/site-polygons${params}`, {
+          fetch(`/api/map/site-polygons`, {
             signal,
             cache: "no-store",
           }),
-          fetch(`/api/map/vc-points${params}`, { signal, cache: "no-store" }),
+          fetch(`/api/map/vc-points`, { signal, cache: "no-store" }),
         ]);
         const [sitesData, vcsData] = await Promise.all([
           sitesRes.json(),
@@ -242,7 +240,7 @@ export default function Map({
         ]);
 
         if (fetchIdRef.current === currentId) {
-          setSitesGeojson(sitesData);
+          setAllSitesData(sitesData);
           setVCsGeojson(vcsData);
         }
       } catch (err: unknown) {
@@ -252,13 +250,46 @@ export default function Map({
     })();
 
     return () => controller.abort();
-  }, [unitcodes]);
+  }, [visibleSiteIDs]);
+
+  useEffect(() => {
+    if (!selectedFeature) return;
+
+    if (
+      selectedFeature.type === "site" &&
+      sitesGeojson &&
+      !sitesGeojson.features.some(
+        (f) => f.properties?.id === selectedFeature.id,
+      )
+    ) {
+      if (setSelectedFeature) {
+        setSelectedFeature(null);
+      }
+    }
+
+    if (
+      selectedFeature.type === "vc" &&
+      vcsGeojson &&
+      !vcsGeojson.features.some((f) => f.properties?.id === selectedFeature.id)
+    ) {
+      if (setSelectedFeature) {
+        setSelectedFeature(null);
+      }
+    }
+  }, [selectedFeature, sitesGeojson, vcsGeojson, setSelectedFeature]);
 
   const vcPoints =
-    vcsGeojson?.features?.map(
-      (feature: Feature<Point, GeoJsonProperties>) =>
-        feature.geometry.coordinates as [number, number],
-    ) ?? [];
+    vcsGeojson?.features
+      ?.filter(
+        (feature: Feature<Point, GeoJsonProperties>) =>
+          !filteredUnitcodes ||
+          filteredUnitcodes.length === 0 ||
+          filteredUnitcodes.includes(feature.properties?.unitcode),
+      )
+      .map(
+        (feature: Feature<Point, GeoJsonProperties>) =>
+          feature.geometry.coordinates as [number, number],
+      ) ?? [];
 
   const scoreColormap = useCallback(
     (score: number) => {
@@ -324,7 +355,9 @@ export default function Map({
       style={{ height: "100%", width: "100%" }}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <FitVisible siteGeojson={sitesGeojson} vcPoints={vcPoints} />
+      {selectedFeature == null && (
+        <FitVisible siteGeojson={sitesGeojson} vcPoints={vcPoints} />
+      )}
       <ZoomToSelection
         selectedFeature={selectedFeature}
         sitesGeojson={sitesGeojson}
@@ -333,17 +366,21 @@ export default function Map({
 
       {sitesGeojson && (
         <GeoJSON
-          key={
-            unitcodes && unitcodes.length ? unitcodes.join(",") : "all-sites"
-          }
+          key={`sites:${visibleSiteIDs?.join(",") ?? "all"}${filteredUnitcodes && filteredUnitcodes.length ? `:uc=${filteredUnitcodes.join(",")}` : ""}`}
           data={sitesGeojson}
           style={geoJsonStyle}
           onEachFeature={onEachFeature}
         />
       )}
       {vcsGeojson &&
-        vcsGeojson.features?.map(
-          (feature: Feature<Point, GeoJsonProperties>) => {
+        vcsGeojson.features
+          ?.filter(
+            (feature: Feature<Point, GeoJsonProperties>) =>
+              !filteredUnitcodes ||
+              filteredUnitcodes.length === 0 ||
+              filteredUnitcodes.includes(feature.properties?.unitcode),
+          )
+          .map((feature: Feature<Point, GeoJsonProperties>) => {
             const [lon, lat] = feature.geometry.coordinates;
             const isSelected =
               selectedFeature &&
@@ -377,8 +414,7 @@ export default function Map({
                 </Popup>
               </CircleMarker>
             );
-          },
-        )}
+          })}
     </MapContainer>
   );
 }

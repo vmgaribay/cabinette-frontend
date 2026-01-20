@@ -8,47 +8,51 @@
  * - Renders a dynamic map with filtered features.
  *
  * Props:
- * - sitesVisible: Callback to notify parent of currently visible sites.
  * - selectedFeature: Currently selected feature.
  * - setSelectedFeature: Callback to update selected feature.
  * - scoredSites: Array of site information objects with scores.
- * - visibleSiteIds: Array of currently visible sites.
  */
 "use client";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import dynamic from "next/dynamic";
 import RankingTable from "./RankingTable";
+import BookmarksFilter from "./BookmarksFilter";
+import { setShowBookmarkedOnly } from "../store/filterSlice";
+import { setFilterUnitcodes } from "../store/filterSlice";
+
 import { FeatureSelection, SiteInfoRow } from "../types";
 const DynamicMap = dynamic(() => import("./DefaultMap"), { ssr: false });
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "../store/store";
+import { makeSelectVisibleSiteIDs } from "../store/selector";
+import { getCSSVar } from "../utils/retrieveVar";
 
 type Park = { unitcode: string; parkname: string };
 
 /**
  * FilteredMap component for filtering the default map.
  * @param {Object} props
- * @param {(ids: string[]) => void} [props.sitesVisible] - Callback with visible sites.
  * @param {FeatureSelection|null} props.selectedFeature - Currently selected feature.
  * @param {(feature: FeatureSelection|null) => void} props.setSelectedFeature - Callback to update selected feature.
  * @param {Array<SiteInfoRow & {score: number}>} props.scoredSites - Array of site info objects with score prop.
- * @param {string[]} props.visibleSiteIds - Array of currently visible sites.
+ * @param {React.RefObject<HTMLDivElement|null>} props.themeRef - Reference to themed div.
  * @returns {JSX.Element}
  */
 export default function FilteredMap({
-  sitesVisible,
   selectedFeature,
   setSelectedFeature,
   scoredSites,
-  visibleSiteIds,
+  themeRef,
 }: {
-  sitesVisible?: (ids: string[]) => void;
   selectedFeature: FeatureSelection | null;
   setSelectedFeature: (feature: FeatureSelection | null) => void;
   scoredSites: (SiteInfoRow & { score: number })[];
-  visibleSiteIds: string[];
+  themeRef: React.RefObject<HTMLDivElement | null>;
 }) {
   const [parks, setParks] = useState<Park[]>([]);
-  const [selected, setSelected] = useState<string[]>([]);
-  const [mapUnitcodes, setMapUnitcodes] = useState<string[]>([]);
+  const filterUnitcodes = useSelector(
+    (state: RootState) => state.filter.filterUnitcodes,
+  );
 
   const scoreID = useMemo(() => {
     const map: Record<string, number> = {};
@@ -64,34 +68,56 @@ export default function FilteredMap({
       .then(setParks);
   }, []);
 
-  useEffect(() => {
-    setMapUnitcodes(selected);
-  }, [selected]);
+  const dispatch = useDispatch();
+
+  const selectVisibleSiteIDs = useMemo(() => makeSelectVisibleSiteIDs(), []);
+  const visibleSiteIDs = useSelector((state: RootState) =>
+    selectVisibleSiteIDs(state, scoredSites),
+  );
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       const selectedOptions = Array.from(e.target.selectedOptions).map(
         (opt) => opt.value,
       );
-      setSelected(selectedOptions);
+      dispatch(setFilterUnitcodes(selectedOptions));
     },
-    [],
+    [dispatch],
   );
-  const handleClear = () => setSelected([]);
 
-  const unitcodesKey = mapUnitcodes.join(",");
+  const currentTheme = useSelector((state: RootState) => state.theme.mode);
+
+  const [colors, setColors] = useState({
+    light: "",
+    xlight: "",
+    accent: "",
+    dark: "",
+  });
+
+  useEffect(() => {
+    if (themeRef.current) {
+      setColors({
+        light: getCSSVar("--light", themeRef.current),
+        xlight: getCSSVar("--xlight", themeRef.current),
+        accent: getCSSVar("--accent", themeRef.current),
+        dark: getCSSVar("--dark", themeRef.current),
+      });
+    }
+  }, [currentTheme, themeRef]);
 
   return (
     <div style={{ display: "flex", gap: 12 }}>
       <div style={{ width: 330 }}>
-        <label className="multi-select-header">
-          Filter Site Visibility by Park/Monument:
+        <label className="multi-select-header" style={{ marginTop: 0 }}>
+          Filter Site Visibility:
         </label>
+        <BookmarksFilter />
         <select
           multiple
-          value={selected}
+          value={filterUnitcodes}
           onChange={handleChange}
           className="multi-select"
+          style={{ marginBottom: 4 }}
         >
           {[...parks]
             .sort((a, b) => a.parkname.localeCompare(b.parkname))
@@ -106,23 +132,19 @@ export default function FilteredMap({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginTop: 8,
+            marginTop: 4,
           }}
         >
-          <span style={{ fontSize: 12, color: "rgb(154, 167, 193, 0.8)" }}>
+          <span style={{ fontSize: 14, color: `rgb(${colors.light}, 0.8)` }}>
             Hold Ctrl (Windows) or Cmd (Mac) to choose multiple locations of
-            interest. Use button to clear.
+            interest.
           </span>
           <button
             type="button"
-            onClick={handleClear}
-            style={{
-              fontSize: 12,
-              padding: "2px 8px",
-              background: "rgb(215, 218, 223)",
-              border: "1px solid rgb(143, 178, 248)",
-              borderRadius: 4,
-              cursor: "pointer",
+            className="highlight-button"
+            onClick={() => {
+              dispatch(setFilterUnitcodes([]));
+              dispatch(setShowBookmarkedOnly(false));
             }}
           >
             Clear Filters
@@ -131,23 +153,23 @@ export default function FilteredMap({
 
         <RankingTable
           scoredSites={scoredSites}
+          visibleSiteIDs={visibleSiteIDs}
           selectedFeature={selectedFeature}
           setSelectedFeature={setSelectedFeature}
-          visibleSiteIds={visibleSiteIds}
         />
       </div>
 
       <div
         style={{ flex: 1, height: 600, borderRadius: 16, overflow: "hidden" }}
       >
-        <DynamicMap
-          key={unitcodesKey}
-          unitcodes={mapUnitcodes}
-          scoreID={scoreID}
-          sitesVisible={sitesVisible}
-          selectedFeature={selectedFeature}
-          setSelectedFeature={setSelectedFeature}
-        />
+        {
+          <DynamicMap
+            scoreID={scoreID}
+            visibleSiteIDs={visibleSiteIDs}
+            selectedFeature={selectedFeature}
+            setSelectedFeature={setSelectedFeature}
+          />
+        }
       </div>
     </div>
   );

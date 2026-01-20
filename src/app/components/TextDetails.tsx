@@ -16,12 +16,16 @@
  * - demandMetric: String indicating the active demand metric.
  * - proximityProxy: String indicating the active proximity proxy.
  */
+"use client";
 import {
   FeatureSelection,
   SiteInfoRow,
   VCInfoRow,
   VisitationRow,
 } from "../types";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store/store";
+import { toggleBookmark } from "../store/bookmarksSlice";
 
 /**
  * TextDetails component with details about the selected feature.
@@ -58,6 +62,12 @@ export default function TextDetails({
   demandMetric?: string;
   proximityProxy?: string;
 }) {
+  //Fetch bookmarks from Redux
+  const dispatch = useDispatch();
+  const bookmarkedSiteIds = useSelector(
+    (state: RootState) => state.bookmarks.siteIds,
+  );
+
   if (!selectedFeature)
     return <h3>Select a Visitor Center or Candidate Site for More Details.</h3>;
 
@@ -118,7 +128,7 @@ export default function TextDetails({
   }
 
   return (
-    <div className="detail-card">
+    <div className="detail-card" style={{ position: "relative" }}>
       {selectedFeature.type === "vc" && vcRow && (
         <>
           <h2>
@@ -137,6 +147,59 @@ export default function TextDetails({
       )}
       {selectedFeature.type === "site" && siteRow && (
         <>
+          <div style={{ position: "absolute", top: -1, right: 50 }}>
+            <button
+              onClick={() =>
+                dispatch(toggleBookmark(selectedFeature.id.toString()))
+              }
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                outline: "none",
+              }}
+              aria-label={
+                bookmarkedSiteIds.includes(selectedFeature.id.toString())
+                  ? "Remove Bookmark"
+                  : "Add Bookmark"
+              }
+              title={
+                bookmarkedSiteIds.includes(selectedFeature.id.toString())
+                  ? "Remove Bookmark"
+                  : "Add Bookmark"
+              }
+            >
+              <svg
+                width="40"
+                height="80"
+                viewBox="0 0 40 80"
+                fill={
+                  bookmarkedSiteIds.includes(selectedFeature.id.toString())
+                    ? "rgba(var(--accent))"
+                    : "none"
+                }
+                stroke="rgba(var(--accent))"
+                strokeWidth="3"
+                style={{ display: "block" }}
+              >
+                <path
+                  d="M6 4h20a2 2 0 0 1 2 2v72l-12-8-12 8V6a2 2 0 0 1 2-2z"
+                  transform="translate(0, -5)"
+                  fill={
+                    bookmarkedSiteIds.includes(selectedFeature.id.toString())
+                      ? "rgba(var(--accent))"
+                      : "none"
+                  }
+                  opacity={
+                    bookmarkedSiteIds.includes(selectedFeature.id.toString())
+                      ? 1
+                      : 0.75
+                  }
+                />
+              </svg>
+            </button>
+          </div>
           <h2>
             <b>Candidate Site {selectedFeature.id} Details</b>
           </h2>

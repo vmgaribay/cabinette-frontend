@@ -12,8 +12,13 @@
  */
 
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import type { RootState } from "../store/store";
+import type { RefObject } from "react";
 import { VisitationRow } from "../types";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
+import { getCSSVar } from "../utils/retrieveVar";
 
 const MONTHS = [
   "Jan",
@@ -40,9 +45,11 @@ const MONTHS = [
 export default function VCVisitationPlot({
   visitation,
   unitcode,
+  themeRef,
 }: {
   visitation: VisitationRow[];
   unitcode: string;
+  themeRef: RefObject<HTMLDivElement | null>;
 }) {
   const data = visitation
     .filter((v) => v.unitcode === unitcode)
@@ -52,6 +59,22 @@ export default function VCVisitationPlot({
   const minVisits = data.map((d) => d.min_recreation_visits);
   const avgVisits = data.map((d) => d.avg_recreation_visits);
   const maxVisits = data.map((d) => d.max_recreation_visits);
+
+  const currentTheme = useSelector((state: RootState) => state.theme.mode);
+
+  const [colors, setColors] = useState({
+    light: "",
+    accent: "",
+  });
+
+  useEffect(() => {
+    if (themeRef.current) {
+      setColors({
+        light: getCSSVar("--light", themeRef.current),
+        accent: getCSSVar("--accent", themeRef.current),
+      });
+    }
+  }, [currentTheme, themeRef]);
 
   return (
     <Plot
@@ -70,7 +93,7 @@ export default function VCVisitationPlot({
           type: "scatter",
           mode: "lines",
           name: "Average",
-          line: { color: "rgb(143, 178, 248)" },
+          line: { color: `rgb(${colors.accent})` },
         },
         {
           x: months,
@@ -83,47 +106,47 @@ export default function VCVisitationPlot({
       ]}
       layout={{
         xaxis: {
-          gridcolor: "rgba(154,167,193,0.25)",
+          gridcolor: `rgba(${colors.light},0.25)`,
           title: {
             text: "Month",
             font: {
               family: "'Lucida Sans', 'Perpetua', serif",
               size: 16,
-              color: "rgb(154,167,193)",
+              color: `rgb(${colors.light})`,
             },
           },
           tickfont: {
             family: "'Lucida Sans', 'Perpetua', serif",
-            color: "rgb(154,167,193)",
+            color: `rgb(${colors.light})`,
           },
         },
         yaxis: {
-          gridcolor: "rgba(154,167,193,0.25)",
+          gridcolor: `rgba(${colors.light},0.25)`,
           title: {
             text: "Visits",
             font: {
               family: "'Lucida Sans', 'Perpetua', serif",
               size: 16,
-              color: "rgb(154,167,193)",
+              color: `rgb(${colors.light})`,
             },
           },
           tickfont: {
             family: "'Lucida Sans', 'Perpetua', serif",
-            color: "rgb(154,167,193)",
+            color: `rgb(${colors.light})`,
           },
         },
         legend: {
           orientation: "h",
           font: {
             family: "'Lucida Sans', 'Perpetua', serif",
-            color: "rgb(154,167,193)",
+            color: `rgb(${colors.light})`,
           },
         },
         paper_bgcolor: "transparent",
         plot_bgcolor: "transparent",
         margin: { t: 22, b: 40, l: 70, r: 40 },
       }}
-      style={{ width: "100%", height: "80%" }}
+      style={{ width: "100%", height: "78%" }}
     />
   );
 }

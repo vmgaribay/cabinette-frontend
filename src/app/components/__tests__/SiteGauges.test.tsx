@@ -9,6 +9,18 @@ jest.mock("react-plotly.js", () => (props: any) => {
   return <div data-testid="plotly-gauge" />;
 });
 import SiteGauges from "../SiteGauges";
+import { Provider } from "react-redux";
+import configureStore from "redux-mock-store";
+import { createRef } from "react";
+
+const mockStore = configureStore([]);
+const store = mockStore({
+  bookmarks: { siteIds: [] },
+  theme: { mode: "default" },
+});
+
+const themeRef = createRef<HTMLDivElement>();
+
 
 const siteRow = {
   combined_min_monthly_visitation: 20,
@@ -40,11 +52,14 @@ const siteInfo = [
 
 test("renders gauges with data", () => {
   render(
+    <Provider store={store}>
     <SiteGauges
       siteRow={siteRow}
       siteInfo={siteInfo}
       demandProxy="Proximate Parks"
-    />,
+      themeRef={themeRef}
+    />
+    </Provider>
   );
   expect(screen.getByTestId("plotly-gauge")).toBeInTheDocument();
   expect(plotProps.data[0].value).toBe(20);
