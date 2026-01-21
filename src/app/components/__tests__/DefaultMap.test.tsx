@@ -1,4 +1,18 @@
+jest.mock("leaflet", () => {
+  const actual = jest.requireActual("leaflet");
+  return {
+    ...actual,
+    control: jest.fn(() => ({
+      addTo: jest.fn(),
+      remove: jest.fn(),
+    })),
+    DomUtil: {
+      create: jest.fn(() => document.createElement("div")),
+    },
+  };
+});
 import { render, waitFor, screen } from "@testing-library/react";
+
 jest.mock("react-leaflet", () => ({
   MapContainer: ({ children }: any) => <div data-testid="map">{children}</div>,
   TileLayer: () => <div data-testid="tile" />,
@@ -11,7 +25,10 @@ jest.mock("react-leaflet", () => ({
     <div data-testid="circle">{children}</div>
   ),
   Popup: ({ children }: any) => <div data-testid="popup">{children}</div>,
-  useMap: () => ({ fitBounds: jest.fn() }),
+  useMap: () => ({
+    fitBounds: jest.fn(),
+    options: {},
+  }),
 }));
 import DefaultMap from "../DefaultMap";
 import configureStore from "redux-mock-store";

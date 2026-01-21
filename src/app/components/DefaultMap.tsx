@@ -21,7 +21,7 @@ import {
   Popup,
   useMap,
 } from "react-leaflet";
-import L from "leaflet";
+import * as L from "leaflet";
 import type {
   FeatureCollection,
   Feature,
@@ -41,6 +41,65 @@ import { RootState } from "../store/store";
  * @param {Array.<[number, number]>} [props.vcPoints] - Array of [longitude, latitude] for visitor centers.
  * @returns {null}
  */
+function Legend() {
+  const map = useMap();
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const hasControl = typeof L.control === "function";
+    const hasDomUtilCreate = typeof L.DomUtil?.create === "function";
+
+    if (!hasControl || !hasDomUtilCreate || !map) {
+      return;
+    }
+    const createControl = L.control as unknown as (
+      options?: L.ControlOptions,
+    ) => L.Control;
+    const legend = (createControl({ position: "bottomleft" }) ?? {}) as {
+      onAdd?: () => HTMLElement | null;
+      addTo?: (map: L.Map) => void;
+      remove?: () => void;
+    };
+    if (!legend || typeof legend !== "object") return;
+
+    legend.onAdd = function () {
+      const div = L.DomUtil.create("div", "legend");
+      div.innerHTML = `
+    <div style="display: flex; align-items: center; margin-bottom: 6px;">
+      <span style="display: inline-block; width: 40px; text-align: center;">
+        <span style="display:inline-block;width:10px;height:10px;background:linear-gradient(to right,rgb(255,255,255),rgb(0,75,224));border:2px solid rgba(0,75,224,0.5);vertical-align:middle;"></span>
+      </span>
+      <span style="margin-left: 3px; color: rgb(24,20,27); text-align: left;">Site (color intensity ∝ score)</span>
+    </div>
+    <div style="display: flex; align-items: center; margin-bottom: 6px;">
+      <span style="display: inline-block; width: 40px; text-align: center;">
+        <span style="display:inline-block;width:6px;height:6px;background:rgba(255,0,0,0.3);border-radius:50%;border:3px solid rgb(255,0,0);vertical-align:middle;"></span>
+      </span>
+      <span style="margin-left: 3px; color: rgb(24,20,27); text-align: left;">NPS Visitor Center</span>
+    </div>
+    <div style="display: flex; align-items: center;">
+      <span style="display: inline-block; width: 40px; text-align: center;">
+        <span style="display:inline-block;width:10px;height:10px;background:rgba(255,165,0,0.4);border:2px solid rgb(255,165,0);vertical-align:middle;"></span>
+        /
+        <span style="display:inline-block;width:6px;height:6px;background:rgba(255,165,0,0.4);border-radius:50%;border:3px solid rgb(255,165,0);vertical-align:middle;"></span>
+      </span>
+      <span style="margin-left: 3px; color: rgb(24,20,27); text-align: left;">Active Selection</span>
+    </div>
+  `;
+      return div;
+    };
+
+    legend.addTo?.(map);
+
+    return () => {
+      legend.remove?.();
+    };
+  }, [map]);
+
+  return null;
+}
+
 function FitVisible({
   siteGeojson,
   vcPoints,
@@ -322,7 +381,7 @@ export default function Map({
         color:
           selectedFeature?.type === "site" &&
           selectedFeature.id === feature?.properties?.id
-            ? "orange"
+            ? "rgb(255, 165, 0)"
             : fillColor,
         weight:
           selectedFeature?.type === "site" &&
@@ -355,6 +414,7 @@ export default function Map({
       style={{ height: "100%", width: "100%" }}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      <Legend />
       {selectedFeature == null && (
         <FitVisible siteGeojson={sitesGeojson} vcPoints={vcPoints} />
       )}
@@ -395,7 +455,7 @@ export default function Map({
                   color: isSelected ? "orange" : "red",
                   fillColor: isSelected ? "orange" : "red",
                 }}
-                radius={isSelected ? 6 : 4}
+                radius={isSelected ? 5 : 4}
                 eventHandlers={{
                   click: () => {
                     if (setSelectedFeature) {

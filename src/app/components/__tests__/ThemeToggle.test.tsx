@@ -6,8 +6,7 @@ import { toggleTheme } from "../../store/themeSlice";
 
 const mockStore = configureStore([]);
 
-describe("ThemeToggle", () => {
-  it("renders label when theme is light", () => {
+test("renders labels", () => {
     const store = mockStore({
       theme: { mode: "light" },
     });
@@ -17,21 +16,11 @@ describe("ThemeToggle", () => {
       </Provider>
     );
     expect(screen.getByText("Light")).toBeInTheDocument();
+    expect(screen.getByText("Dark")).toBeInTheDocument();
+
   });
 
-  it("renders label when theme is default", () => {
-    const store = mockStore({
-      theme: { mode: "default" },
-    });
-    render(
-      <Provider store={store}>
-        <ThemeToggle />
-      </Provider>
-    );
-    expect(screen.getByText("Default")).toBeInTheDocument();
-  });
-
-  it("dispatches toggleTheme when clicked", () => {
+  test("dispatches toggleTheme when clicked", () => {
     const store = mockStore({
       theme: { mode: "default" },
     });
@@ -46,4 +35,3 @@ describe("ThemeToggle", () => {
     fireEvent.click(screen.getByRole("button"));
     expect(store.dispatch).toHaveBeenCalledWith(toggleTheme());
   });
-});
