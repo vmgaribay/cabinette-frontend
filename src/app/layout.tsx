@@ -38,6 +38,19 @@ export default function RootLayout({
           <nav>
             <ul>
               <li>
+                <a
+                  href="https://github.com/vmgaribay/cabinette-frontend"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  About (GitHub
+                  <span aria-label="external link" role="img">
+                    🔗
+                  </span>
+                  )
+                </a>
+              </li>
+              <li>
                 <a href="https://vmgaribay.github.io/portfolio/cabinette_log.html">
                   Cabinette Log
                 </a>
