@@ -1,6 +1,6 @@
 # Cabinette (Online Edition)
 
-Inspired by the Power BI dashboard created for Cabinette, this is a similar interactive dashboard for exploring and ranking candidate cabin sites near U.S. National Parks and Monuments. This version is an online application for improved accessibility which was built with Next.js, React, Redux, and TypeScript.
+Inspired by the Power BI report created for [Cabinette](https://github.com/vmgaribay/cabinette), this is a similar interactive dashboard for exploring and ranking candidate cabin sites near U.S. National Parks and Monuments. This version is an online application for improved accessibility which was built with Next.js, React, Redux, and TypeScript ([See it Live!](https://cabinette-frontend.vercel.app/)).
 
 ## Functionalities
 
