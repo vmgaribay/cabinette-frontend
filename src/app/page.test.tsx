@@ -1,4 +1,10 @@
-import { render, screen, waitFor, act } from "@testing-library/react";
+import {
+  render,
+  screen,
+  waitFor,
+  act,
+  fireEvent,
+} from "@testing-library/react";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 
@@ -25,6 +31,16 @@ jest.mock("./components/SiteGauges", () => ({
   __esModule: true,
   default: () => <div data-testid="site-gauges" />,
 }));
+const mockSetIsOpen = jest.fn();
+jest.mock("@reactour/tour", () => {
+  const React = require("react");
+  return {
+    __esModule: true,
+    useTour: () => ({ setIsOpen: mockSetIsOpen }),
+    TourProvider: ({ children }: any) =>
+      React.createElement("div", null, children),
+  };
+});
 const mockStore = configureStore([]);
 const store = mockStore({
   bookmarks: { siteIds: [] },
@@ -42,13 +58,14 @@ describe("Main Page", () => {
     (global.fetch as jest.Mock).mockClear();
     mockFilteredMap.mockClear();
     mockWeightsProxies.mockClear();
+    mockSetIsOpen.mockClear();
   });
 
   test("renders heading and components", async () => {
     render(
       <Provider store={store}>
         <Home />
-      </Provider>
+      </Provider>,
     );
     expect(screen.getByText("Cabinette Map")).toBeInTheDocument();
     await waitFor(() => {
@@ -62,12 +79,25 @@ describe("Main Page", () => {
     render(
       <Provider store={store}>
         <Home />
-      </Provider>
+      </Provider>,
     );
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith("/api/details/site_info");
       expect(global.fetch).toHaveBeenCalledWith("/api/details/vc_info");
       expect(global.fetch).toHaveBeenCalledWith("/api/details/visitation");
     });
+  });
+
+  test("tour opens on clicking button", () => {
+    render(
+      <Provider store={store}>
+        <Home />
+      </Provider>,
+    );
+    const btn = screen.getByRole("button", {
+      name: /take a tour to get started!/i,
+    });
+    fireEvent.click(btn);
+    expect(mockSetIsOpen).toHaveBeenCalledWith(true);
   });
 });

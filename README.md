@@ -50,6 +50,39 @@ Inspired by the Power BI report created for [Cabinette](https://github.com/vmgar
 │       └───utils                   # utility functions
 └───__mocks__/mockStyles.ts         # empty style for unit tests
 ```
+## Dependencies
+<details>
+<summary>Main Dependencies</summary>
+
+- [Next.js](https://nextjs.org/)
+- [React](https://react.dev/)
+- [React DOM](https://react.dev/)
+- [Redux Toolkit](https://redux-toolkit.js.org/)
+- [React Redux](https://react-redux.js.org/)
+- [Leaflet](https://leafletjs.com/)
+- [React Leaflet](https://react-leaflet.js.org/)
+- [pg](https://node-postgres.com/)
+- [@reactour/tour](https://docs.reactour.dev/)
+- [react-icons](https://react-icons.github.io/react-icons/)
+- [react-plotly.js](https://github.com/plotly/react-plotly.js)
+</details>
+
+<details>
+<summary>Dev Dependencies</summary>
+
+- [TypeScript](https://www.typescriptlang.org/)
+- Types for React, React DOM, geojson, Leaflet, Plotly, and pg
+- [ESLint](https://eslint.org/) (and configs)
+- [Prettier](https://prettier.io/)
+- [Jest](https://jestjs.io/)
+- [Testing Library](https://testing-library.com/) (React and Jest)
+- [ts-jest](https://kulshekhar.github.io/ts-jest/)
+- [redux-mock-store](https://github.com/reduxjs/redux-mock-store)
+- [@tailwindcss/postcss](https://tailwindcss.com/docs/using-with-preprocessors)
+- [babel-plugin-react-compiler](https://www.npmjs.com/package/babel-plugin-react-compiler)
+- [globals](https://www.npmjs.com/package/globals)
+- [typescript-eslint](https://typescript-eslint.io/)
+</details>
 
 ## Data
 

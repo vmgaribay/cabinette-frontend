@@ -22,6 +22,7 @@ export default function ThemeToggle() {
   const currentTheme = useSelector((state: RootState) => state.theme.mode);
   return (
     <button
+      data-tour="theme"
       onClick={() => dispatch(toggleTheme())}
       title={`Switch to ${currentTheme === "light" ? "Default" : "Light"} Theme`}
       style={{

@@ -21,7 +21,6 @@ const store = mockStore({
 
 const themeRef = createRef<HTMLDivElement>();
 
-
 const siteRow = {
   combined_min_monthly_visitation: 20,
   combined_overall_avg_monthly_visitation: 40,
@@ -53,13 +52,13 @@ const siteInfo = [
 test("renders gauges with data", () => {
   render(
     <Provider store={store}>
-    <SiteGauges
-      siteRow={siteRow}
-      siteInfo={siteInfo}
-      demandProxy="Proximate Parks"
-      themeRef={themeRef}
-    />
-    </Provider>
+      <SiteGauges
+        siteRow={siteRow}
+        siteInfo={siteInfo}
+        demandProxy="Proximate Parks"
+        themeRef={themeRef}
+      />
+    </Provider>,
   );
   expect(screen.getByTestId("plotly-gauge")).toBeInTheDocument();
   expect(plotProps.data[0].value).toBe(20);

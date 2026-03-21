@@ -10,23 +10,23 @@ const scoredSites = [
   { id: "site3", score: 1.5 },
 ];
 
-  const mockStore = configureStore([]);
-  const store = mockStore({
-      bookmarks: { siteIds: [] },
-      filter: { showBookmarkedOnly: false, unitcodeFilteredSiteIDs: [] },
-    });
-    store.dispatch = jest.fn();
+const mockStore = configureStore([]);
+const store = mockStore({
+  bookmarks: { siteIds: [] },
+  filter: { showBookmarkedOnly: false, unitcodeFilteredSiteIDs: [] },
+});
+store.dispatch = jest.fn();
 
 test("ranking table renders", () => {
   render(
     <Provider store={store}>
-    <RankingTable
-      scoredSites={scoredSites}
-      visibleSiteIDs={["site1","site2","site3"]}
-      selectedFeature={null}
-      setSelectedFeature={() => {}}
-    />
-    </Provider>
+      <RankingTable
+        scoredSites={scoredSites}
+        visibleSiteIDs={["site1", "site2", "site3"]}
+        selectedFeature={null}
+        setSelectedFeature={() => {}}
+      />
+    </Provider>,
   );
   expect(screen.getByText("Top Sites by Score")).toBeInTheDocument();
   expect(screen.getByText("1")).toBeInTheDocument();
@@ -42,14 +42,13 @@ test("reaction to row click", () => {
   const setSelectedFeature = jest.fn();
   render(
     <Provider store={store}>
-
-    <RankingTable
-      scoredSites={scoredSites}
-      visibleSiteIDs={["site1","site2","site3"]}
-      selectedFeature={{ type: "site", id: "site2" }}
-      setSelectedFeature={setSelectedFeature}
-    />
-    </Provider>
+      <RankingTable
+        scoredSites={scoredSites}
+        visibleSiteIDs={["site1", "site2", "site3"]}
+        selectedFeature={{ type: "site", id: "site2" }}
+        setSelectedFeature={setSelectedFeature}
+      />
+    </Provider>,
   );
   const selectedRow = screen.getByText("site2").closest("tr");
   expect(selectedRow).toHaveStyle("background: rgba(var(--xlight), 0.4)");
@@ -65,14 +64,13 @@ test("checkbox dispatches toggleBookmark", () => {
   render(
     <Provider store={store}>
       <RankingTable
-        scoredSites= {scoredSites}
-        visibleSiteIDs={["site1","site2","site3"]}
+        scoredSites={scoredSites}
+        visibleSiteIDs={["site1", "site2", "site3"]}
         selectedFeature={null}
         setSelectedFeature={() => {}}
       />
-    </Provider>
+    </Provider>,
   );
-
 
   const checkboxes = screen.getAllByRole("checkbox");
   fireEvent.click(checkboxes[1]);
@@ -84,11 +82,11 @@ test("rendered sites sorted by score descending", () => {
     <Provider store={store}>
       <RankingTable
         scoredSites={scoredSites}
-        visibleSiteIDs={["site1","site2","site3"]}
+        visibleSiteIDs={["site1", "site2", "site3"]}
         selectedFeature={null}
         setSelectedFeature={() => {}}
       />
-    </Provider>
+    </Provider>,
   );
   const rows = screen.getAllByRole("row");
   expect(rows[1]).toHaveTextContent("site3");
@@ -110,7 +108,7 @@ test("sites filtered based on visibleSiteIDs", () => {
         selectedFeature={null}
         setSelectedFeature={() => {}}
       />
-    </Provider>
+    </Provider>,
   );
 
   expect(screen.queryByText("site1")).not.toBeInTheDocument();

@@ -125,8 +125,12 @@ describe("VCVisitationPlot", () => {
   it("plot renders", () => {
     render(
       <Provider store={store}>
-        <VCVisitationPlot visitation={mockVisitation} unitcode="JOTR" themeRef={themeRef} />
-      </Provider>
+        <VCVisitationPlot
+          visitation={mockVisitation}
+          unitcode="JOTR"
+          themeRef={themeRef}
+        />
+      </Provider>,
     );
     expect(screen.getByText("Feb")).toBeInTheDocument();
   });
@@ -134,8 +138,12 @@ describe("VCVisitationPlot", () => {
   it("data is filtered", () => {
     render(
       <Provider store={store}>
-        <VCVisitationPlot visitation={mockVisitation} unitcode="REDW" themeRef={themeRef} />
-      </Provider>
+        <VCVisitationPlot
+          visitation={mockVisitation}
+          unitcode="REDW"
+          themeRef={themeRef}
+        />
+      </Provider>,
     );
     expect(screen.queryByText(/Feb/)).not.toBeInTheDocument();
     expect(screen.getByText(/Minimum, Average, Maximum/)).toBeInTheDocument();

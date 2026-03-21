@@ -149,6 +149,7 @@ export default function TextDetails({
         <>
           <div style={{ position: "absolute", top: -1, right: 50 }}>
             <button
+              data-tour="bookmark-detail-toggle"
               onClick={() =>
                 dispatch(toggleBookmark(selectedFeature.id.toString()))
               }

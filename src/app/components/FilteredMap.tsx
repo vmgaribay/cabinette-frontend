@@ -114,6 +114,7 @@ export default function FilteredMap({
         <BookmarksFilter />
         <select
           multiple
+          data-tour="filter-select"
           value={filterUnitcodes}
           onChange={handleChange}
           className="multi-select"
@@ -160,6 +161,7 @@ export default function FilteredMap({
       </div>
 
       <div
+        data-tour="map"
         style={{ flex: 1, height: 600, borderRadius: 16, overflow: "hidden" }}
       >
         {
