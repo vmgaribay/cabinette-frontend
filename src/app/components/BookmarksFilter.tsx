@@ -201,6 +201,7 @@ export default function BookmarksFilter() {
     >
       <label style={{ display: "flex", alignItems: "center", marginBottom: 1 }}>
         <input
+          data-tour="bookmark-filter"
           type="checkbox"
           checked={showBookmarkedOnly}
           onChange={(e) => dispatch(setShowBookmarkedOnly(e.target.checked))}
@@ -211,6 +212,7 @@ export default function BookmarksFilter() {
         </span>
       </label>
       <button
+        data-tour="bookmark-utilities"
         className="highlight-button"
         onClick={() => setMenuOpen((open) => !open)}
         title="Save or load existing bookmarks"

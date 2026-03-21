@@ -59,7 +59,7 @@ export default function RankingTable({
   }, [scoredSites, visibleSiteIDs]);
 
   return (
-    <div>
+    <div data-tour="rankings">
       <h2 style={{ textAlign: "center" }}>Top Sites by Score</h2>
 
       <table className="ranking-table">
@@ -137,6 +137,7 @@ export default function RankingTable({
               >
                 <td className="table-cell" style={{ textAlign: "center" }}>
                   <input
+                    data-tour="bookmark-ranking-toggle"
                     type="checkbox"
                     checked={bookmarkedSiteIds.includes(site.id.toString())}
                     onChange={() =>

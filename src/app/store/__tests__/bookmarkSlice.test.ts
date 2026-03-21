@@ -1,9 +1,14 @@
-import bookmarksReducer, { setBookmarks, toggleBookmark } from "../bookmarksSlice";
+import bookmarksReducer, {
+  setBookmarks,
+  toggleBookmark,
+} from "../bookmarksSlice";
 
 const initialState = { siteIds: [] };
 
 test("returns initial state", () => {
-  expect(bookmarksReducer(undefined, { type: undefined })).toEqual(initialState);
+  expect(bookmarksReducer(undefined, { type: undefined })).toEqual(
+    initialState,
+  );
 });
 
 test("handles setBookmarks", () => {
@@ -18,7 +23,10 @@ test("adds a bookmark with toggleBookmark", () => {
 
 test("removes bookmark with toggleBookmark", () => {
   const stateWithBookmark = { siteIds: ["site1"] };
-  const nextState = bookmarksReducer(stateWithBookmark, toggleBookmark("site1"));
+  const nextState = bookmarksReducer(
+    stateWithBookmark,
+    toggleBookmark("site1"),
+  );
   expect(nextState.siteIds).toEqual([]);
 });
 

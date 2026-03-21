@@ -1,6 +1,6 @@
 {
   "name": "cabinette-frontend",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,6 +10,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@reactour/tour": "^3.8.0",
     "@reduxjs/toolkit": "^2.11.2",
     "leaflet": "^1.9.4",
     "next": "16.0.10",

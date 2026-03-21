@@ -17,7 +17,7 @@ jest.mock("react-leaflet", () => ({
   MapContainer: ({ children }: any) => <div data-testid="map">{children}</div>,
   TileLayer: () => <div data-testid="tile" />,
   GeoJSON: ({ data }: any) => (
-<div data-testid="geojson" data-json={JSON.stringify(data)}>
+    <div data-testid="geojson" data-json={JSON.stringify(data)}>
       {JSON.stringify(data)}
     </div>
   ),
@@ -37,7 +37,7 @@ import { Provider } from "react-redux";
 const sitesGeojsonMock = {
   features: [
     {
-      properties: { id: "site_1" , parks_within_30_mi_unitcodes: "JOTR, LOTR"},
+      properties: { id: "site_1", parks_within_30_mi_unitcodes: "JOTR, LOTR" },
       geometry: {
         type: "Polygon",
         coordinates: [
@@ -67,7 +67,6 @@ const sitesGeojsonMock = {
       },
     },
   ],
-
 };
 const vcsGeojsonMock = {
   features: [
@@ -78,7 +77,7 @@ const vcsGeojsonMock = {
     {
       properties: { id: "VC_2", unitcode: "LOTR" },
       geometry: { type: "Point", coordinates: [1, 1] },
-    }
+    },
   ],
 };
 
@@ -110,9 +109,9 @@ afterEach(() => {
 
 test("container renders", async () => {
   render(
-  <Provider store={mockStore(initialState)}>
-    <DefaultMap scoreID={{ site_1: 1, site_2: 2}} visibleSiteIDs={[]}/>
-  </Provider>
+    <Provider store={mockStore(initialState)}>
+      <DefaultMap scoreID={{ site_1: 1, site_2: 2 }} visibleSiteIDs={[]} />
+    </Provider>,
   );
   await waitFor(() => expect(global.fetch).toHaveBeenCalled());
 });
@@ -120,9 +119,11 @@ test("container renders", async () => {
 test("filters visitor centers", async () => {
   render(
     <Provider store={mockStore(initialState)}>
-      <DefaultMap scoreID={{ site_1: 1, site_2: 2 }} 
-      visibleSiteIDs={["site_1","site_2"]}/>
-    </Provider>
+      <DefaultMap
+        scoreID={{ site_1: 1, site_2: 2 }}
+        visibleSiteIDs={["site_1", "site_2"]}
+      />
+    </Provider>,
   );
   await waitFor(() => expect(global.fetch).toHaveBeenCalled());
 
@@ -135,9 +136,11 @@ test("filters visitor centers", async () => {
 test("filters site polygons", async () => {
   render(
     <Provider store={mockStore(initialState)}>
-      <DefaultMap scoreID={{ site_1: 1, site_2: 2 }}
-       visibleSiteIDs={["site_1"]}/>
-    </Provider>
+      <DefaultMap
+        scoreID={{ site_1: 1, site_2: 2 }}
+        visibleSiteIDs={["site_1"]}
+      />
+    </Provider>,
   );
   await waitFor(() => expect(global.fetch).toHaveBeenCalled());
 

@@ -8,11 +8,11 @@ const mockStore = configureStore([]);
 const store = mockStore({
   bookmarks: { siteIds: [] },
   theme: { mode: "default" },
-    filter: {
+  filter: {
     filterUnitcodes: [],
     showBookmarkedOnly: false,
-    unitcodeFilteredSiteIDs: []
-  }
+    unitcodeFilteredSiteIDs: [],
+  },
 });
 
 jest.mock("../DefaultMap", () => () => <div data-testid="dynamic-map" />);
@@ -39,17 +39,15 @@ afterEach(() => {
 test("filter labels render", async () => {
   render(
     <Provider store={store}>
-    <FilteredMap
-      selectedFeature={null}
-      setSelectedFeature={() => {}}
-      scoredSites={[]}
-      themeRef={themeRef}
-    />
-    </Provider>
+      <FilteredMap
+        selectedFeature={null}
+        setSelectedFeature={() => {}}
+        scoredSites={[]}
+        themeRef={themeRef}
+      />
+    </Provider>,
   );
-  expect(
-    screen.getByText(/filter site visibility/i),
-  ).toBeInTheDocument();
+  expect(screen.getByText(/filter site visibility/i)).toBeInTheDocument();
   await waitFor(() =>
     expect(screen.getByText("Joshua Tree NP")).toBeInTheDocument(),
   );
@@ -58,13 +56,13 @@ test("filter labels render", async () => {
 test("filter value updates", async () => {
   render(
     <Provider store={store}>
-    <FilteredMap
-      selectedFeature={null}
-      setSelectedFeature={() => {}}
-      scoredSites={[]}
-      themeRef={themeRef}
-    />
-    </Provider>
+      <FilteredMap
+        selectedFeature={null}
+        setSelectedFeature={() => {}}
+        scoredSites={[]}
+        themeRef={themeRef}
+      />
+    </Provider>,
   );
   await waitFor(() =>
     expect(screen.getByText("Joshua Tree NP")).toBeInTheDocument(),
@@ -73,24 +71,24 @@ test("filter value updates", async () => {
   const option = screen.getByText("Joshua Tree NP") as HTMLOptionElement;
   option.selected = true;
   fireEvent.change(select);
-await waitFor(() => {
-  expect(store.getActions()).toContainEqual({
-    type: "filter/setFilterUnitcodes",
-    payload: ["JOTR"],
+  await waitFor(() => {
+    expect(store.getActions()).toContainEqual({
+      type: "filter/setFilterUnitcodes",
+      payload: ["JOTR"],
+    });
   });
-});
 });
 
 test("button clears filters", async () => {
   render(
     <Provider store={store}>
-    <FilteredMap
-      selectedFeature={null}
-      setSelectedFeature={() => {}}
-      scoredSites={[]}
-      themeRef={themeRef}
-    />
-    </Provider>
+      <FilteredMap
+        selectedFeature={null}
+        setSelectedFeature={() => {}}
+        scoredSites={[]}
+        themeRef={themeRef}
+      />
+    </Provider>,
   );
   await waitFor(() =>
     expect(screen.getByText("Joshua Tree NP")).toBeInTheDocument(),
@@ -99,13 +97,13 @@ test("button clears filters", async () => {
   const options = screen.getAllByRole("option");
   options[0].selected = true;
   fireEvent.change(select);
-fireEvent.click(screen.getByText(/clear filters/i));
-expect(store.getActions()).toContainEqual({
-  type: "filter/setFilterUnitcodes",
-  payload: [],
-});
-expect(store.getActions()).toContainEqual({
-  type: "filter/setShowBookmarkedOnly",
-  payload: false,
-});
+  fireEvent.click(screen.getByText(/clear filters/i));
+  expect(store.getActions()).toContainEqual({
+    type: "filter/setFilterUnitcodes",
+    payload: [],
+  });
+  expect(store.getActions()).toContainEqual({
+    type: "filter/setShowBookmarkedOnly",
+    payload: false,
+  });
 });

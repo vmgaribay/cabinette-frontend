@@ -1,14 +1,13 @@
-import { render, screen,fire, fireEvent } from "@testing-library/react";
+import { render, screen, fire, fireEvent } from "@testing-library/react";
 import TextDetails from "../TextDetails";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { toggleBookmark } from "../../store/bookmarksSlice";
 
 const mockStore = configureStore([]);
- const store = mockStore({
-      bookmarks: { siteIds: [] },
-    });
-
+const store = mockStore({
+  bookmarks: { siteIds: [] },
+});
 
 const mockSiteInfo = [
   {
@@ -46,13 +45,13 @@ describe("TextDetails", () => {
   it("selection prompt renders", () => {
     render(
       <Provider store={store}>
-      <TextDetails
-        selectedFeature={null}
-        siteInfo={mockSiteInfo}
-        vcInfo={mockVCInfo}
-        visitation={mockVisitation}
-      />
-      </Provider>
+        <TextDetails
+          selectedFeature={null}
+          siteInfo={mockSiteInfo}
+          vcInfo={mockVCInfo}
+          visitation={mockVisitation}
+        />
+      </Provider>,
     );
     expect(
       screen.getByText(/select a visitor center or candidate site/i),
@@ -61,14 +60,14 @@ describe("TextDetails", () => {
 
   it("VC details render", () => {
     render(
-     <Provider store={store}>
-      <TextDetails
-        selectedFeature={{ type: "vc", id: "JOTR_1" }}
-        siteInfo={mockSiteInfo}
-        vcInfo={mockVCInfo}
-        visitation={mockVisitation}
-      />
-      </Provider>
+      <Provider store={store}>
+        <TextDetails
+          selectedFeature={{ type: "vc", id: "JOTR_1" }}
+          siteInfo={mockSiteInfo}
+          vcInfo={mockVCInfo}
+          visitation={mockVisitation}
+        />
+      </Provider>,
     );
     expect(
       screen.getByText(/Visitor Center JOTR_1 Details/i),
@@ -82,18 +81,18 @@ describe("TextDetails", () => {
   it("site details render", () => {
     render(
       <Provider store={store}>
-      <TextDetails
-        selectedFeature={{ type: "site", id: "111" }}
-        siteInfo={mockSiteInfo}
-        vcInfo={mockVCInfo}
-        visitation={mockVisitation}
-        score={0.5}
-        competitionProxy="Lodging Near Site"
-        demandProxy="Proximate Parks"
-        demandMetric="Average"
-        proximityProxy="Average Distance to Proximate Parks"
-      />
-      </Provider>
+        <TextDetails
+          selectedFeature={{ type: "site", id: "111" }}
+          siteInfo={mockSiteInfo}
+          vcInfo={mockVCInfo}
+          visitation={mockVisitation}
+          score={0.5}
+          competitionProxy="Lodging Near Site"
+          demandProxy="Proximate Parks"
+          demandMetric="Average"
+          proximityProxy="Average Distance to Proximate Parks"
+        />
+      </Provider>,
     );
     expect(screen.getByText(/Candidate Site 111 Details/i)).toBeInTheDocument();
     expect(screen.getByText(/Score:/i)).toBeInTheDocument();
@@ -111,7 +110,7 @@ describe("TextDetails", () => {
     expect(screen.getByText(/3.7 km/i)).toBeInTheDocument();
   });
 
-it("toggleBookmark dispatches when bookmark button is clicked", () => {
+  it("toggleBookmark dispatches when bookmark button is clicked", () => {
     render(
       <Provider store={store}>
         <TextDetails
@@ -125,12 +124,13 @@ it("toggleBookmark dispatches when bookmark button is clicked", () => {
           demandMetric="Average"
           proximityProxy="Average Distance to Proximate Parks"
         />
-      </Provider>
+      </Provider>,
     );
 
     const bookmarkButton = screen.getByLabelText(/Add Bookmark/i);
     fireEvent.click(bookmarkButton);
 
     const actions = store.getActions();
-    expect(actions).toContainEqual(toggleBookmark("111"));  });
+    expect(actions).toContainEqual(toggleBookmark("111"));
+  });
 });
