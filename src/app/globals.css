@@ -220,7 +220,8 @@
     border-color 0.1s;
 }
 .highlight-button:hover {
-  background: rgba(var(--accent), 0.08);
+  background: rgb(var(--dark));
+  border: 2px solid rgb(var(--accent));
   box-shadow: 0 4px 12px rgba(var(--accent), 0.15);
 }
 
